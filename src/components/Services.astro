@@ -114,48 +114,4 @@ import { services } from "../data/services";
       transform: none;
     }
   }
-
-  /* ========== Mobile : cartes empilées au scroll ==========
-     Chaque carte se fige sous le header (position: sticky) ;
-     la suivante glisse par-dessus en défilant. En remontant,
-     les cartes précédentes réapparaissent naturellement. */
-  @media (max-width: 639px) {
-    #svc-stack {
-      display: block;
-    }
-    #svc-stack .svc-tile {
-      position: sticky;
-      /* léger décalage progressif : on voit les bords des cartes empilées */
-      top: calc(96px + var(--i) * 12px);
-      display: block;
-      margin-bottom: 1.4rem;
-      box-shadow: 0 -12px 32px -14px rgba(3, 20, 42, 0.45), 0 18px 40px -18px rgba(3, 20, 42, 0.4);
-      border: 1px solid rgba(201, 162, 75, 0.35);
-    }
-    #svc-stack .svc-tile:last-child {
-      margin-bottom: 0;
-    }
-    /* Cartes plus grandes et immersives */
-    #svc-stack .aspect-\[4\/3\] {
-      aspect-ratio: 4 / 5;
-      max-height: 58vh;
-    }
-    #svc-stack .svc-tile h3 {
-      font-size: 1.15rem;
-    }
-    #svc-stack .svc-tile-sub,
-    #svc-stack .svc-tile-cta {
-      opacity: 1;
-      transform: none;
-      font-size: 0.85rem;
-    }
-    /* Le liseré doré est toujours visible sur mobile */
-    #svc-stack .svc-tile-line {
-      transform: scaleX(1);
-    }
-    /* Pas de lift/scale au toucher : incompatible avec l'empilement */
-    #svc-stack .svc-tile:hover {
-      transform: none;
-    }
-  }
 </style>
