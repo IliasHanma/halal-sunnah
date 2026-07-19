@@ -186,11 +186,26 @@
       );
     }
 
-    /* Tout le contenu centré */
+    /* Mise en page verticale : titre en évidence dans le tiers haut,
+       boutons ancrés en bas de l'écran */
     #hero .max-w-\[620px\] {
       margin-left: auto;
       margin-right: auto;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 8rem);
+      min-height: calc(100svh - 8rem);
+    }
+    #hero .hero-title {
+      margin-top: 13vh;
+      margin-bottom: 1.4rem;
+    }
+    /* Les boutons descendent en bas */
+    #hero .hero-title ~ .hero-fade:last-of-type,
+    #hero div.hero-fade.flex-col {
+      margin-top: auto;
+      margin-bottom: 5vh;
     }
 
     /* Sur mobile : seul le titre reste — slogan et paragraphe masqués */
