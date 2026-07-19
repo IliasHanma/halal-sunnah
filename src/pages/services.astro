@@ -1,0 +1,154 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const services = [
+  {
+    title: "Omra sur mesure",
+    text: "Voyage personnalisé selon vos besoins.",
+    slug: "omra-sur-mesure",
+    img: "/images/kaaba.jpg",
+  },
+  {
+    title: "Visite de Médine",
+    text: "Sur les traces du Prophète ﷺ.",
+    slug: "visite-de-medine",
+    img: "/images/medine.jpg",
+  },
+  {
+    title: "Hôtels Premium",
+    text: "À quelques minutes des lieux saints.",
+    slug: "hotel-logements",
+    img: "/images/srv-hotel.jpg",
+  },
+  {
+    title: "Vols & Transports",
+    text: "Voyagez en toute sérénité.",
+    slug: "transports-aeroport",
+    img: "/images/srv-transport.jpg",
+  },
+  {
+    title: "Visa inclus",
+    text: "Nous nous occupons des démarches administratives.",
+    slug: "visa",
+    img: "/images/srv-visa.jpg",
+  },
+  {
+    title: "Assistance francophone",
+    text: "Une équipe à vos côtés à chaque étape.",
+    slug: "activites",
+    img: "/images/srv-activites.jpg",
+  },
+];
+---
+
+<Layout title="Nos services — Halal Sunnah" description="Découvrez les services Halal Sunnah : Omra sur mesure, Médine, hôtels premium, vols, visa et assistance.">
+  <Header />
+  <main>
+    <section class="relative pt-32 pb-24 sm:pt-40 sm:pb-32 overflow-hidden bg-white">
+      <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Title -->
+        <div class="text-center max-w-2xl mx-auto mb-16 lg:mb-20 reveal">
+          <span class="eyebrow mb-5">Nos services</span>
+          <h2 class="font-heading font-bold mb-4" style="font-size:clamp(1.9rem,3.4vw,2.7rem); color: var(--ink);">
+            Un accompagnement complet
+          </h2>
+          <p class="text-gray-500 leading-relaxed">
+            Du visa au retour, chaque étape de votre voyage est prise en charge.
+          </p>
+        </div>
+
+        <!-- Balanced 3x2 grid with focus interaction -->
+        <div id="svc-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7" data-stagger="80">
+          {services.map((s, i) => (
+            <a
+              href={`/services/${s.slug}`}
+              class="svc-card reveal group relative overflow-hidden bg-white"
+              style="border-radius:24px; aspect-ratio:3/4; box-shadow:0 6px 24px rgba(11,44,93,0.07);"
+            >
+              <div class="absolute inset-0">
+                <img
+                  src={s.img}
+                  alt={s.title}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  class="svc-img w-full h-full object-cover"
+                  style="filter: saturate(0.92) contrast(1.05) brightness(0.98);"
+                />
+                <div class="svc-overlay absolute inset-0" style="background: linear-gradient(180deg, rgba(11,44,93,0.15) 0%, rgba(11,44,93,0.72) 100%);"></div>
+              </div>
+              <div class="relative z-10 h-full flex flex-col justify-end p-7">
+                <h3 class="font-heading font-bold text-white mb-2" style="font-size:1.2rem;">
+                  {s.title}
+                </h3>
+                <p class="text-white/75 text-sm leading-snug mb-4">
+                  {s.text}
+                </p>
+                <span class="svc-cta inline-flex items-center gap-2 font-semibold text-sm tracking-wide w-fit" style="color:#C89A3D;">
+                  Découvrir
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .svc-card {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, filter 0.5s ease, opacity 1s var(--ease-expo);
+    will-change: transform;
+  }
+  .svc-card.reveal:not(.visible) {
+    transition:
+      opacity 1s var(--ease-expo),
+      transform 1s var(--ease-expo),
+      filter 1s var(--ease-expo);
+  }
+
+  .svc-img {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .svc-overlay {
+    transition: opacity 0.5s ease;
+  }
+
+  .svc-cta {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  /* Hover: the card in focus */
+  .svc-card:hover {
+    transform: scale(1.05) translateY(-6px);
+    box-shadow: 0 30px 60px -18px rgba(11,44,93,0.32);
+    z-index: 2;
+  }
+  .svc-card:hover .svc-img {
+    transform: scale(1.06);
+  }
+  .svc-card:hover .svc-overlay {
+    opacity: 0.75;
+  }
+  .svc-card:hover .svc-cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* All siblings dim and shrink slightly while another card is hovered */
+  #svc-grid:hover .svc-card:not(:hover) {
+    transform: scale(0.97);
+    filter: brightness(0.85);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-card, .svc-img, .svc-overlay, .svc-cta { transition: none; }
+  }
+</style>

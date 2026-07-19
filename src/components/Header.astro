@@ -1,0 +1,235 @@
+---
+const navLinks = [
+  { label: "Accueil", href: "/" },
+  { label: "Nos services", href: "/services" },
+  { label: "À propos", href: "/a-propos" },
+];
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header id="header" class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-6">
+    <!-- Desktop -->
+    <div class="hidden md:flex items-center justify-between h-20">
+      <a href="/" class="flex items-center gap-3 logo-link">
+        <img src="/images/logo.png" alt="Halal Sunnah" class="h-16 w-auto" />
+      </a>
+
+      <nav class="flex items-center gap-9">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            aria-current={currentPath === link.href ? "page" : undefined}
+            class="link-gold text-primary-200 hover:text-white font-medium tracking-[0.18em] transition-colors duration-300 text-xs uppercase"
+          >
+            {link.label}
+          </a>
+        ))}
+
+        <a
+          href="https://wa.me/32497570058"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-pill relative inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase group"
+        >
+          <svg class="w-3.5 h-3.5 flex-shrink-0 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          <span class="relative z-10">Contact</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Mobile -->
+    <div class="flex md:hidden items-center justify-between h-20">
+      <a href="/">
+        <img src="/images/logo.png" alt="Halal Sunnah" class="h-16 w-auto" />
+      </a>
+      <button id="mobile-menu-btn" class="burger relative w-10 h-10 flex items-center justify-center text-white" aria-label="Menu" aria-expanded="false">
+        <span class="burger-line" style="transform: translateY(-5px);"></span>
+        <span class="burger-line" style="transform: translateY(5px);"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-line gold-hr"></div>
+
+  <!-- Menu mobile plein écran -->
+  <div id="mobile-menu" class="mobile-overlay md:hidden" aria-hidden="true">
+    <nav class="h-full flex flex-col items-center justify-center gap-8">
+      {navLinks.map((link, i) => (
+        <a
+          href={link.href}
+          class="mobile-link font-heading text-3xl font-semibold text-white"
+          style={`transition-delay:${0.08 + i * 0.07}s;`}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="https://wa.me/32497570058"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mobile-link btn-gold rounded-full px-10 py-4 text-xs font-bold tracking-[0.2em] uppercase mt-4"
+        style="transition-delay:0.32s;"
+      >
+        Contact WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  #header {
+    background: rgba(4, 27, 54, 0.55);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    transition:
+      transform 0.55s var(--ease-expo),
+      background-color 0.45s var(--ease-smooth),
+      box-shadow 0.45s var(--ease-smooth);
+  }
+  #header.scrolled {
+    background: rgba(3, 20, 42, 0.88);
+    box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.6);
+  }
+  #header.hidden-up {
+    transform: translateY(-100%);
+  }
+
+  .logo-link img {
+    transition: transform 0.5s var(--ease-expo);
+  }
+  .logo-link:hover img {
+    transform: scale(1.06);
+  }
+
+  .contact-pill {
+    color: var(--gold);
+    padding: 10px 24px;
+    border-radius: 9999px;
+    border: 1px solid rgba(201, 162, 75, 0.5);
+    overflow: hidden;
+    isolation: isolate;
+    transition: color 0.4s var(--ease-smooth), transform 0.4s var(--ease-expo);
+  }
+  .contact-pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-expo);
+    border-radius: 9999px;
+  }
+  .contact-pill:hover {
+    color: var(--navy-950);
+    transform: translateY(-1px);
+  }
+  .contact-pill:hover::before {
+    transform: scaleX(1);
+  }
+
+  .header-line {
+    opacity: 0.35;
+  }
+
+  /* Burger animé */
+  .burger-line {
+    position: absolute;
+    width: 22px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.45s var(--ease-expo);
+  }
+  .burger.open .burger-line:first-child {
+    transform: rotate(45deg);
+  }
+  .burger.open .burger-line:last-child {
+    transform: rotate(-45deg);
+  }
+
+  /* Overlay mobile */
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    top: 80px;
+    background: rgba(3, 20, 42, 0.96);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s var(--ease-smooth);
+  }
+  .mobile-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mobile-link {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      opacity 0.6s var(--ease-expo),
+      transform 0.6s var(--ease-expo),
+      color 0.3s;
+  }
+  .mobile-overlay.open .mobile-link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .mobile-link:hover {
+    color: var(--gold);
+  }
+</style>
+
+<script>
+  // Listener de scroll global (une seule fois, résout les éléments à la volée)
+  let lastScroll = 0;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const header = document.getElementById("header");
+      const menu = document.getElementById("mobile-menu");
+      if (!header) return;
+      const current = window.scrollY;
+      header.classList.toggle("scrolled", current > 40);
+      if (current > 120 && current > lastScroll && !menu?.classList.contains("open")) {
+        header.classList.add("hidden-up");
+      } else {
+        header.classList.remove("hidden-up");
+      }
+      lastScroll = current;
+    },
+    { passive: true }
+  );
+
+  function initHeader() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const header = document.getElementById("header");
+    if (!header || header.dataset.init === "1") return;
+    header.dataset.init = "1";
+
+    const closeMenu = () => {
+      menu?.classList.remove("open");
+      btn?.classList.remove("open");
+      btn?.setAttribute("aria-expanded", "false");
+      menu?.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    btn?.addEventListener("click", () => {
+      const isOpen = menu?.classList.toggle("open");
+      btn.classList.toggle("open", !!isOpen);
+      btn.setAttribute("aria-expanded", String(!!isOpen));
+      menu?.setAttribute("aria-hidden", String(!isOpen));
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
+    menu?.querySelectorAll("a").forEach((l) => l.addEventListener("click", closeMenu));
+    document.addEventListener("astro:before-swap", closeMenu, { once: true });
+  }
+
+  document.addEventListener("astro:page-load", initHeader);
+</script>

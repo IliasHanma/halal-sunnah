@@ -1,0 +1,99 @@
+﻿---
+---
+
+<section id="a-propos" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header centré -->
+    <div class="text-center mb-16 reveal">
+      <span class="eyebrow mb-5">À propos</span>
+      <h2 class="font-heading font-bold text-primary-900 text-3xl sm:text-4xl mb-4">
+        Nés d'une passion, construits depuis Le Caire
+      </h2>
+      <p class="text-gray-500 text-base max-w-2xl mx-auto leading-relaxed">
+        Quatre frères, une vision commune : rendre le voyage spirituel vers les Lieux Saints accessible à tous les musulmans francophones.
+      </p>
+    </div>
+
+    <!-- Grille principale -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- Colonne gauche : histoire + valeurs -->
+      <div class="space-y-8 reveal-left">
+
+        <!-- Histoire -->
+        <div class="border-l-2 border-accent-gold pl-6 space-y-4 text-gray-600 leading-relaxed">
+          <p>
+            <strong class="text-primary-900">Halal Sunnah</strong>, c'est avant tout l'histoire de <strong class="text-primary-900">quatre frères</strong>, basés au <strong class="text-primary-900">Caire, en Égypte</strong>. C'est depuis cette ville que nous avons donné naissance à ce projet, animés par une ambition sincère : accompagner les musulmans francophones dans leur voyage vers les Lieux Saints, avec sérieux, confiance et dans le plein respect de la Sunnah.
+          </p>
+          <p>
+            En tant qu'<strong class="text-primary-900">agence de services spécialisée dans l'Omra</strong>, nous assurons une prise en charge complète de votre voyage — de l'organisation à l'arrivée sur place — pour que vous puissiez vous consacrer pleinement à votre adoration.
+          </p>
+        </div>
+
+        <!-- Valeurs en grille -->
+        <div class="grid grid-cols-2 gap-4 pt-2">
+          {[
+            { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", title: "Transparence", desc: "Prix clairs, sans frais cachés" },
+            { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", title: "Confiance", desc: "Un service fiable et sécurisé" },
+            { icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", title: "Respect", desc: "Valeurs conformes à la Sunnah" },
+            { icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z", title: "Qualité", desc: "Hébergements et services premium" },
+          ].map(v => (
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-gray-50 hover:bg-primary-50 transition-colors duration-200">
+              <div class="w-9 h-9 bg-white border border-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg class="w-4 h-4 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d={v.icon} />
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-primary-900 text-sm">{v.title}</div>
+                <div class="text-gray-500 text-xs mt-0.5 leading-snug">{v.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Nos services en pills -->
+        <div>
+          <p class="text-xs font-semibold text-primary-900 uppercase tracking-widest mb-3">Nos services</p>
+          <div class="flex flex-wrap gap-2">
+            {["Omra sur mesure", "Visite de Médine", "Omra par procuration", "Hébergement", "Transferts", "Activités spirituelles", "Visa"].map(s => (
+              <span class="bg-primary-50 text-primary-700 border border-primary-100 text-xs font-medium px-3 py-1.5 rounded-full">
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Colonne droite : images + encart mission -->
+      <div class="reveal-right">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-3">
+            <div class="rounded-2xl overflow-hidden shadow-md aspect-[4/3]">
+              <img src="/images/medine.jpg" alt="Mosquée du Prophète à Médine" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-md aspect-square">
+              <img src="/images/kaaba2.jpg" alt="La Kaaba" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+          </div>
+          <div class="space-y-3 pt-6">
+            <div class="rounded-2xl overflow-hidden shadow-md aspect-square">
+              <img src="/images/islamic-arch.jpg" alt="Architecture islamique" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            </div>
+            <!-- Encart mission -->
+            <div class="rounded-2xl bg-primary-900 p-5 flex flex-col items-center justify-center text-center relative overflow-hidden">
+              <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-10" style="background:#C8A951;"></div>
+              <div class="h-px w-8 bg-accent-gold/60 mb-4"></div>
+              <p class="text-accent-gold font-medium text-xs tracking-[0.2em] uppercase mb-2">Notre mission</p>
+              <p class="text-white font-heading font-bold text-base leading-snug mb-2">Votre Omra,<br/>notre priorité</p>
+              <p class="text-primary-300 text-xs leading-relaxed">Rendre chaque voyage vers les Lieux Saints inoubliable, spirituel et sans stress.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

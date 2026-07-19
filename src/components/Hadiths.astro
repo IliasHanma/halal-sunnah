@@ -1,0 +1,265 @@
+---
+const hadiths = [
+  {
+    texte: "Une Omra à une autre Omra est une expiation pour les péchés commis entre elles, et le Hajj mabrour n'a d'autre récompense que le Paradis.",
+    source: "Sahih Al-Bukhari & Sahih Muslim",
+    sujet: "La Omra",
+    arabique: "العُمْرَةُ إِلَى الْعُمْرَةِ كَفَّارَةٌ لِمَا بَيْنَهُمَا",
+  },
+  {
+    texte: "La Omra effectuée pendant le mois de Ramadan équivaut à un Hajj accompli en ma compagnie.",
+    source: "Sahih Al-Bukhari & Sahih Muslim",
+    sujet: "La Omra",
+    arabique: "عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً مَعِي",
+  },
+  {
+    texte: "Les pèlerins de Hajj et de Omra sont les invités d'Allah. Il les a appelés et ils ont répondu à Son appel. Ils lui demandent et Il leur accorde.",
+    source: "Ibn Mājah — Sahih",
+    sujet: "La Omra",
+    arabique: "الْحُجَّاجُ وَالْعُمَّارُ وَفْدُ اللَّهِ",
+  },
+  {
+    texte: "Uhud est une montagne qui nous aime et que nous aimons. Il se trouve sur une des portes du Paradis.",
+    source: "Sahih Al-Bukhari",
+    sujet: "Mont Uhud",
+    arabique: "أُحُدٌ جَبَلٌ يُحِبُّنَا وَنُحِبُّهُ",
+  },
+  {
+    texte: "Prier dans la mosquée de Quba équivaut en récompense à une Omra accomplie.",
+    source: "Sunan At-Tirmidhi & Ibn Mājah — Sahih",
+    sujet: "Masjid Quba",
+    arabique: "الصَّلَاةُ فِي مَسْجِدِ قُبَاءَ كَعُمْرَةٍ",
+  },
+  {
+    texte: "Quiconque peut mourir à Médine, qu'il y meure. Car j'intercéderai en faveur de celui qui mourra à Médine.",
+    source: "Sunan At-Tirmidhi — Sahih",
+    sujet: "Médine",
+    arabique: "مَنِ اسْتَطَاعَ أَنْ يَمُوتَ بِالْمَدِينَةِ فَلْيَمُتْ بِهَا",
+  },
+  {
+    texte: "Médine est une terre sacrée. Ses arbres ne doivent pas être coupés et aucune innovation blâmable ne doit y être introduite.",
+    source: "Sahih Muslim",
+    sujet: "Médine",
+    arabique: "الْمَدِينَةُ حَرَمٌ مَا بَيْنَ عَيْرٍ إِلَى ثَوْرٍ",
+  },
+  {
+    texte: "Une prière dans ma mosquée vaut mieux que mille prières ailleurs, sauf dans la Mosquée Sacrée.",
+    source: "Sahih Al-Bukhari & Sahih Muslim",
+    sujet: "Mosquée du Prophète ﷺ",
+    arabique: "صَلَاةٌ فِي مَسْجِدِي هَذَا خَيْرٌ مِنْ أَلْفِ صَلَاةٍ فِيمَا سِوَاهُ",
+  },
+];
+---
+
+<section class="relative overflow-hidden" style="background: var(--navy-950); padding-top: 4.5rem; padding-bottom: 2rem;">
+  <div class="gold-hr absolute top-0 left-0 right-0"></div>
+  <div class="gold-hr absolute bottom-0 left-0 right-0"></div>
+
+  <!-- Halo doré ambiant -->
+  <div class="absolute pointer-events-none" style="left: 50%; top: 40%; width: 720px; height: 420px; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgba(201,162,75,0.09), transparent 65%);"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- En-tête -->
+    <div class="text-center mb-6 reveal">
+      <span class="eyebrow">Paroles du Prophète ﷺ</span>
+    </div>
+
+    <!-- Carrousel de hadiths -->
+    <div class="relative max-w-4xl mx-auto reveal">
+
+      <div id="hadith-container" class="relative min-h-[250px] sm:min-h-[225px]">
+        {hadiths.map((h, i) => (
+          <div class="hadith-slide absolute inset-0" data-index={i} data-active={i === 0 ? "1" : "0"}>
+            <div class="hadith-card rounded-2xl p-5 sm:p-7 text-center">
+              <!-- Badge sujet -->
+              <span class="inline-block text-[10px] font-semibold px-3.5 py-1 rounded-full tracking-[0.22em] uppercase mb-4" style="border: 1px solid rgba(201,162,75,0.55); color: var(--gold);">
+                {h.sujet}
+              </span>
+
+              <!-- Texte arabe -->
+              <p class="hadith-ar text-lg sm:text-2xl mb-4 leading-relaxed" dir="rtl" style="font-family: 'Amiri', 'Traditional Arabic', serif; color: var(--gold-light);">
+                {h.arabique}
+              </p>
+
+              <!-- Séparateur -->
+              <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="h-px w-8" style="background: rgba(201,162,75,0.3);"></div>
+                <div class="w-1 h-1 rounded-full" style="background: rgba(201,162,75,0.5);"></div>
+                <div class="h-px w-8" style="background: rgba(201,162,75,0.3);"></div>
+              </div>
+
+              <!-- Traduction française -->
+              <blockquote class="text-sm sm:text-base leading-relaxed italic mb-5" style="color: #b8cce4;">
+                « {h.texte} »
+              </blockquote>
+
+              <!-- Source -->
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-3.5 h-3.5" style="color: rgba(201,162,75,0.6);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span class="text-xs font-medium" style="color: rgba(201,162,75,0.7);">{h.source}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Points de navigation -->
+      <div class="flex justify-center gap-2 mt-9">
+        {hadiths.map((_, i) => (
+          <button class="hadith-dot" data-index={i} data-active={i === 0 ? "1" : "0"} aria-label={`Hadith ${i + 1}`} />
+        ))}
+      </div>
+
+      <!-- Flèches -->
+      <button id="hadith-prev" class="hadith-arrow absolute top-1/2 -left-4 sm:-left-16 -translate-y-1/2" aria-label="Hadith précédent">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      <button id="hadith-next" class="hadith-arrow absolute top-1/2 -right-4 sm:-right-16 -translate-y-1/2" aria-label="Hadith suivant">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="max-w-4xl mx-auto mt-7 h-px overflow-hidden rounded-full" style="background: rgba(255,255,255,0.1);">
+      <div id="hadith-progress" class="h-full rounded-full" style="width: 0%; background: linear-gradient(to right, var(--gold-deep), var(--gold-light));"></div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .hadith-card {
+    background: linear-gradient(160deg, rgba(10, 55, 101, 0.65), rgba(6, 43, 82, 0.9));
+    border: 1px solid rgba(201, 162, 75, 0.28);
+    box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .hadith-slide {
+    opacity: 0;
+    transform: translateY(26px) scale(0.985);
+    filter: blur(5px);
+    pointer-events: none;
+    transition:
+      opacity 0.8s var(--ease-expo),
+      transform 0.8s var(--ease-expo),
+      filter 0.8s var(--ease-expo);
+  }
+  .hadith-slide[data-active="1"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    pointer-events: auto;
+  }
+
+  .hadith-dot {
+    width: 8px;
+    height: 3px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.45s var(--ease-expo);
+  }
+  .hadith-dot:hover {
+    background: rgba(201, 162, 75, 0.5);
+  }
+  .hadith-dot[data-active="1"] {
+    width: 2rem;
+    background: var(--gold);
+  }
+
+  .hadith-arrow {
+    width: 42px;
+    height: 42px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 55, 101, 0.7);
+    border: 1px solid rgba(201, 162, 75, 0.3);
+    color: rgba(201, 162, 75, 0.75);
+    transition:
+      transform 0.4s var(--ease-expo),
+      background-color 0.4s,
+      color 0.4s,
+      border-color 0.4s;
+  }
+  .hadith-arrow:hover {
+    background: var(--gold);
+    color: var(--navy-950);
+    border-color: var(--gold);
+    transform: translateY(-50%) scale(1.1);
+  }
+</style>
+
+<script>
+  let hadithTimers: { raf: number; interval: ReturnType<typeof setInterval> } | null = null;
+
+  function initHadiths() {
+    const container = document.getElementById("hadith-container");
+    if (!container || container.dataset.init === "1") return;
+    container.dataset.init = "1";
+
+    const slides = document.querySelectorAll<HTMLElement>(".hadith-slide");
+    const dots = document.querySelectorAll<HTMLButtonElement>(".hadith-dot");
+    const progress = document.getElementById("hadith-progress") as HTMLElement;
+    const DURATION = 6000;
+    let current = 0;
+    let startTime = Date.now();
+
+    function goTo(index: number) {
+      slides[current].dataset.active = "0";
+      dots[current].dataset.active = "0";
+      current = (index + slides.length) % slides.length;
+      slides[current].dataset.active = "1";
+      dots[current].dataset.active = "1";
+      startTime = Date.now();
+      progress.style.transition = "none";
+      progress.style.width = "0%";
+    }
+
+    function animateProgress() {
+      if (!document.body.contains(progress)) return;
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min((elapsed / DURATION) * 100, 100);
+      progress.style.transition = pct > 0 ? "width 0.1s linear" : "none";
+      progress.style.width = pct + "%";
+      hadithTimers!.raf = requestAnimationFrame(animateProgress);
+    }
+
+    function startAuto() {
+      if (hadithTimers) {
+        cancelAnimationFrame(hadithTimers.raf);
+        clearInterval(hadithTimers.interval);
+      }
+      startTime = Date.now();
+      hadithTimers = {
+        raf: requestAnimationFrame(animateProgress),
+        interval: setInterval(() => goTo(current + 1), DURATION),
+      };
+    }
+
+    document.getElementById("hadith-next")?.addEventListener("click", () => { goTo(current + 1); startAuto(); });
+    document.getElementById("hadith-prev")?.addEventListener("click", () => { goTo(current - 1); startAuto(); });
+    dots.forEach((dot) => dot.addEventListener("click", () => { goTo(Number(dot.dataset.index)); startAuto(); }));
+
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        if (hadithTimers) {
+          cancelAnimationFrame(hadithTimers.raf);
+          clearInterval(hadithTimers.interval);
+          hadithTimers = null;
+        }
+      },
+      { once: true }
+    );
+
+    startAuto();
+  }
+
+  document.addEventListener("astro:page-load", initHadiths);
+</script>

@@ -1,0 +1,99 @@
+---
+import { ClientRouter } from "astro:transitions";
+import WhatsappButton from "../components/WhatsappButton.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Halal Sunnah — Agence spécialisée dans l'organisation de la Omra. Voyagez en toute sérénité vers les Lieux Saints." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#062B52" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Halal Sunnah" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+    <noscript>
+      <style>
+        .reveal, .reveal-left, .reveal-right {
+          opacity: 1 !important;
+          transform: none !important;
+          filter: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <slot />
+    <WhatsappButton />
+
+    <script>
+      // Nettoyage d'un ancien service worker (cache obsolète)
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((reg) => reg.unregister());
+        });
+      }
+
+      function initReveals() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        );
+
+        // Décalage automatique des enfants d'un conteneur [data-stagger]
+        document.querySelectorAll<HTMLElement>("[data-stagger]").forEach((parent) => {
+          const step = Number(parent.dataset.stagger) || 90;
+          parent
+            .querySelectorAll<HTMLElement>(".reveal, .reveal-left, .reveal-right")
+            .forEach((el, i) => {
+              if (!el.style.transitionDelay) el.style.transitionDelay = `${(i * step) / 1000}s`;
+            });
+        });
+
+        document
+          .querySelectorAll(".reveal, .reveal-left, .reveal-right")
+          .forEach((el) => observer.observe(el));
+
+        // Filet de sécurité : si l'observer ne s'est pas déclenché
+        // (navigateur atypique), on révèle ce qui est déjà à l'écran.
+        setTimeout(() => {
+          document
+            .querySelectorAll(".reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)")
+            .forEach((el) => {
+              const r = el.getBoundingClientRect();
+              if (r.top < window.innerHeight && r.bottom > 0) el.classList.add("visible");
+            });
+        }, 2500);
+      }
+
+      document.addEventListener("astro:page-load", initReveals);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,213 @@
+---
+---
+
+<section class="relative py-20 overflow-hidden bg-white">
+  <div class="gold-hr absolute top-0 left-0 right-0"></div>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- En-tête -->
+    <div class="text-center mb-12 reveal">
+      <span class="eyebrow mb-5">Votre expérience</span>
+      <h2 class="font-heading font-bold mb-3" style="font-size: clamp(1.8rem, 3.2vw, 2.5rem); color: var(--ink);">Avis de nos clients</h2>
+      <p class="text-gray-500 text-sm">Partagez votre expérience et lisez les témoignages de nos pèlerins.</p>
+    </div>
+
+    <!-- Avis validés -->
+    <div id="avis-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12"></div>
+    <p id="no-avis" class="text-center text-gray-400 text-sm mb-12 hidden">Aucun avis pour l'instant. Soyez le premier à partager votre expérience !</p>
+
+    <!-- Formulaire -->
+    <div class="avis-form-card max-w-2xl mx-auto bg-white rounded-3xl p-7 sm:p-10 reveal">
+
+      <h3 class="font-heading font-bold text-xl mb-6" style="color: var(--ink);">Laisser un avis</h3>
+
+      <!-- Étoiles -->
+      <div class="mb-7">
+        <label class="block font-semibold text-sm mb-3" style="color: var(--ink);">Votre note</label>
+        <div id="stars" class="flex gap-2">
+          {[1,2,3,4,5].map(n => (
+            <button type="button" class="star-btn focus:outline-none" data-value={n} aria-label={`${n} étoiles`}>
+              <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </button>
+          ))}
+        </div>
+        <input type="hidden" id="note-value" value="0" />
+        <p id="note-label" class="text-xs text-gray-400 mt-2">Cliquez pour noter</p>
+      </div>
+
+      <div class="mb-5">
+        <label for="avis-nom" class="block font-semibold text-sm mb-2" style="color: var(--ink);">Votre prénom</label>
+        <input id="avis-nom" type="text" placeholder="Ex : Mohammed" class="field w-full rounded-xl px-4 py-3 text-sm" />
+      </div>
+
+      <div class="mb-7">
+        <label for="avis-message" class="block font-semibold text-sm mb-2" style="color: var(--ink);">Votre message</label>
+        <textarea id="avis-message" rows="4" placeholder="Partagez votre expérience avec Halal Sunnah..." class="field w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
+      </div>
+
+      <button id="avis-submit" type="button" class="btn-gold w-full font-bold py-4 rounded-xl text-sm tracking-[0.14em] uppercase flex items-center justify-center gap-3">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+        </svg>
+        Envoyer mon avis
+      </button>
+
+      <!-- Confirmation -->
+      <div id="avis-confirme" class="hidden mt-5 text-center">
+        <div class="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium" style="background: rgba(201,162,75,0.1); border: 1px solid rgba(201,162,75,0.4); color: var(--gold-deep);">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Merci ! Votre avis est en attente de validation.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="gold-hr absolute bottom-0 left-0 right-0"></div>
+</section>
+
+<style>
+  .avis-form-card {
+    border: 1px solid rgba(6, 43, 82, 0.08);
+    box-shadow: 0 20px 50px -25px rgba(6, 43, 82, 0.18);
+  }
+
+  .field {
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    transition:
+      border-color 0.35s var(--ease-smooth),
+      box-shadow 0.35s var(--ease-smooth);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.18);
+  }
+
+  .star-btn {
+    transition: transform 0.25s var(--ease-expo);
+  }
+  .star-btn:hover {
+    transform: scale(1.18) rotate(-4deg);
+  }
+  .star-btn:active {
+    transform: scale(0.95);
+  }
+  .star-btn svg {
+    transition: fill 0.25s, stroke 0.25s;
+  }
+</style>
+
+<script>
+  function initAvis() {
+    const submitBtn = document.getElementById("avis-submit");
+    if (!submitBtn || submitBtn.dataset.init === "1") return;
+    submitBtn.dataset.init = "1";
+
+    const GOLD = "#C9A24B";
+    const EMPTY = "#D1D5DB";
+    const KEY_PENDING = "hs_avis_pending";
+    const KEY_APPROVED = "hs_avis_approved";
+    const STAR_LABELS = ["Mauvais", "Passable", "Bien", "Très bien", "Excellent"];
+
+    let currentNote = 0;
+    const starBtns = document.querySelectorAll<HTMLButtonElement>(".star-btn");
+    const noteInput = document.getElementById("note-value") as HTMLInputElement;
+    const noteLabel = document.getElementById("note-label") as HTMLElement;
+
+    function paintStars(filled: number) {
+      starBtns.forEach((btn, i) => {
+        const svg = btn.querySelector("svg")!;
+        svg.setAttribute("fill", i < filled ? GOLD : "none");
+        svg.setAttribute("stroke", i < filled ? GOLD : EMPTY);
+      });
+    }
+
+    starBtns.forEach((btn, i) => {
+      btn.addEventListener("mouseenter", () => paintStars(i + 1));
+      btn.addEventListener("mouseleave", () => paintStars(currentNote));
+      btn.addEventListener("click", () => {
+        currentNote = i + 1;
+        noteInput.value = String(currentNote);
+        noteLabel.textContent = STAR_LABELS[i];
+        noteLabel.style.color = GOLD;
+        paintStars(currentNote);
+      });
+    });
+
+    function starsSVG(note: number) {
+      return [1, 2, 3, 4, 5]
+        .map(
+          (i) =>
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="${i <= note ? GOLD : "none"}" stroke="${i <= note ? GOLD : EMPTY}" stroke-width="1.5">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>`
+        )
+        .join("");
+    }
+
+    function renderCard(a: any) {
+      const d = new Date(a.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+      const init = a.nom.slice(0, 2).toUpperCase();
+      return `<div style="background:white;border:1px solid rgba(6,43,82,0.08);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;animation:fadeUp .6s cubic-bezier(0.16,1,0.3,1) forwards;box-shadow:0 4px 18px -8px rgba(6,43,82,0.1);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:38px;height:38px;border-radius:50%;background:#062B52;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="color:#C9A24B;font-weight:700;font-size:13px;">${init}</span>
+          </div>
+          <div>
+            <p style="font-weight:700;font-size:14px;color:#0B2647;margin:0;">${a.nom}</p>
+            <p style="font-size:11px;color:#9CA3AF;margin:0;">${d}</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:2px;">${starsSVG(a.note)}</div>
+        <p style="font-size:13px;color:#374151;line-height:1.6;margin:0;font-style:italic;">"${a.message}"</p>
+      </div>`;
+    }
+
+    function displayApproved() {
+      const list: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
+      const container = document.getElementById("avis-list")!;
+      const empty = document.getElementById("no-avis")!;
+      if (list.length === 0) {
+        container.innerHTML = "";
+        empty.classList.remove("hidden");
+      } else {
+        empty.classList.add("hidden");
+        container.innerHTML = [...list].reverse().map(renderCard).join("");
+      }
+    }
+
+    submitBtn.addEventListener("click", () => {
+      const nom = (document.getElementById("avis-nom") as HTMLInputElement).value.trim();
+      const message = (document.getElementById("avis-message") as HTMLTextAreaElement).value.trim();
+      if (!nom || !message || currentNote === 0) {
+        alert("Merci de remplir tous les champs et de donner une note.");
+        return;
+      }
+
+      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
+      pending.push({ id: Date.now(), nom, message, note: currentNote, date: new Date().toISOString() });
+      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
+
+      (document.getElementById("avis-nom") as HTMLInputElement).value = "";
+      (document.getElementById("avis-message") as HTMLTextAreaElement).value = "";
+      currentNote = 0;
+      noteInput.value = "0";
+      noteLabel.textContent = "Cliquez pour noter";
+      noteLabel.style.color = "";
+      paintStars(0);
+      document.getElementById("avis-confirme")!.classList.remove("hidden");
+      setTimeout(() => document.getElementById("avis-confirme")?.classList.add("hidden"), 4000);
+    });
+
+    displayApproved();
+  }
+
+  document.addEventListener("astro:page-load", initAvis);
+</script>

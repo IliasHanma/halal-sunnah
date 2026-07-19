@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "halal-sunnah",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
+      "runtimeArgs": ["astro", "dev", "--host"],
+      "cwd": "C:\\Users\\A\\Desktop\\Halal Sunnah",
+      "port": 4321,
+      "autoPort": false
+    }
+  ]
+}

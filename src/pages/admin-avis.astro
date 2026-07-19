@@ -1,0 +1,194 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Administration — Avis clients">
+  <main style="min-height:100vh;background:#f1f5f9;padding:40px 16px;">
+
+    <!-- Auth screen -->
+    <div id="auth-screen" class="max-w-sm mx-auto bg-white rounded-2xl shadow p-8 mt-20">
+      <div class="text-center mb-6">
+        <img src="/images/logo.png" alt="Halal Sunnah" class="h-16 mx-auto mb-3" />
+        <h1 class="text-xl font-bold text-primary-900">Administration</h1>
+        <p class="text-gray-400 text-sm mt-1">Modération des avis clients</p>
+      </div>
+      <input id="pwd-input" type="password" placeholder="Mot de passe"
+        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:border-accent-gold" />
+      <button id="pwd-btn"
+        class="w-full bg-primary-900 hover:bg-primary-800 text-white font-bold py-3 rounded-xl text-sm transition-all">
+        Accéder
+      </button>
+      <p id="pwd-error" class="text-red-500 text-xs text-center mt-2 hidden">Mot de passe incorrect.</p>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="admin-panel" class="hidden max-w-5xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-primary-900">Modération des avis</h1>
+          <p class="text-gray-500 text-sm mt-1">Validez ou rejetez les avis avant publication.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="badge-pending" class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full"></span>
+          <a href="/" class="text-sm text-gray-400 hover:text-primary-900 transition-colors">← Retour au site</a>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-6">
+        <button id="tab-pending" onclick="showTab('pending')"
+          class="px-5 py-2 rounded-full text-sm font-semibold bg-primary-900 text-white transition-all">
+          En attente
+        </button>
+        <button id="tab-approved" onclick="showTab('approved')"
+          class="px-5 py-2 rounded-full text-sm font-semibold bg-white text-gray-500 border border-gray-200 transition-all">
+          Validés
+        </button>
+      </div>
+
+      <!-- Pending list -->
+      <div id="list-pending"></div>
+
+      <!-- Approved list -->
+      <div id="list-approved" class="hidden"></div>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const PASSWORD     = 'halalSunnah2025';
+  const KEY_PENDING  = 'hs_avis_pending';
+  const KEY_APPROVED = 'hs_avis_approved';
+  const GOLD = '#C8A951';
+  const EMPTY = '#D1D5DB';
+
+  // ── Auth ──
+  document.getElementById('pwd-btn')!.addEventListener('click', checkPwd);
+  document.getElementById('pwd-input')!.addEventListener('keydown', (e: any) => {
+    if (e.key === 'Enter') checkPwd();
+  });
+
+  function checkPwd() {
+    const val = (document.getElementById('pwd-input') as HTMLInputElement).value;
+    if (val === PASSWORD) {
+      document.getElementById('auth-screen')!.classList.add('hidden');
+      document.getElementById('admin-panel')!.classList.remove('hidden');
+      renderAll();
+    } else {
+      document.getElementById('pwd-error')!.classList.remove('hidden');
+    }
+  }
+
+  // ── Tabs ──
+  function showTab(tab: 'pending' | 'approved') {
+    const isPending = tab === 'pending';
+    document.getElementById('list-pending')!.classList.toggle('hidden', !isPending);
+    document.getElementById('list-approved')!.classList.toggle('hidden', isPending);
+    document.getElementById('tab-pending')!.className = isPending
+      ? 'px-5 py-2 rounded-full text-sm font-semibold bg-primary-900 text-white transition-all'
+      : 'px-5 py-2 rounded-full text-sm font-semibold bg-white text-gray-500 border border-gray-200 transition-all';
+    document.getElementById('tab-approved')!.className = !isPending
+      ? 'px-5 py-2 rounded-full text-sm font-semibold bg-primary-900 text-white transition-all'
+      : 'px-5 py-2 rounded-full text-sm font-semibold bg-white text-gray-500 border border-gray-200 transition-all';
+  }
+
+  function load(key: string): any[] {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  }
+  function save(key: string, data: any[]) {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  function starsSVG(note: number) {
+    return [1,2,3,4,5].map(i =>
+      `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i<=note?GOLD:'none'}" stroke="${i<=note?GOLD:EMPTY}" stroke-width="1.5">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>`
+    ).join('');
+  }
+
+  function renderCard(a: any, type: 'pending' | 'approved') {
+    const d = new Date(a.date).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const init = a.nom.slice(0,2).toUpperCase();
+    const actions = type === 'pending'
+      ? `<div style="display:flex;gap:8px;margin-top:12px;">
+          <button onclick="approve(${a.id})"
+            style="flex:1;background:#042650;color:white;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.05em;">
+            ✓ Valider
+          </button>
+          <button onclick="reject(${a.id})"
+            style="flex:1;background:#FEF2F2;color:#DC2626;border:1px solid #FCA5A5;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">
+            ✕ Rejeter
+          </button>
+        </div>`
+      : `<div style="margin-top:12px;">
+          <button onclick="remove(${a.id})"
+            style="background:#FEF2F2;color:#DC2626;border:1px solid #FCA5A5;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;">
+            Supprimer
+          </button>
+        </div>`;
+
+    return `<div id="card-${a.id}" style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid #F3F4F6;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:42px;height:42px;border-radius:50%;background:#042650;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span style="color:#C8A951;font-weight:700;font-size:14px;">${init}</span>
+        </div>
+        <div style="flex:1;">
+          <p style="font-weight:700;font-size:15px;color:#042650;margin:0;">${a.nom}</p>
+          <p style="font-size:11px;color:#9CA3AF;margin:0;">${d}</p>
+        </div>
+        <div style="display:flex;gap:2px;">${starsSVG(a.note)}</div>
+      </div>
+      <p style="font-size:13px;color:#374151;line-height:1.6;margin:0;background:#F9FAFB;padding:12px;border-radius:10px;font-style:italic;">"${a.message}"</p>
+      ${actions}
+    </div>`;
+  }
+
+  function renderAll() {
+    const pending  = load(KEY_PENDING);
+    const approved = load(KEY_APPROVED);
+
+    const badge = document.getElementById('badge-pending')!;
+    badge.textContent = pending.length > 0 ? `${pending.length} en attente` : 'Aucun en attente';
+
+    const lp = document.getElementById('list-pending')!;
+    lp.innerHTML = pending.length === 0
+      ? '<p style="text-align:center;color:#9CA3AF;padding:40px 0;">Aucun avis en attente.</p>'
+      : pending.map(a => renderCard(a, 'pending')).join('');
+
+    const la = document.getElementById('list-approved')!;
+    la.innerHTML = approved.length === 0
+      ? '<p style="text-align:center;color:#9CA3AF;padding:40px 0;">Aucun avis validé pour l\'instant.</p>'
+      : [...approved].reverse().map(a => renderCard(a, 'approved')).join('');
+  }
+
+  (window as any).approve = (id: number) => {
+    const pending  = load(KEY_PENDING);
+    const approved = load(KEY_APPROVED);
+    const idx = pending.findIndex(a => a.id === id);
+    if (idx === -1) return;
+    approved.push(pending.splice(idx, 1)[0]);
+    save(KEY_PENDING, pending);
+    save(KEY_APPROVED, approved);
+    renderAll();
+  };
+
+  (window as any).reject = (id: number) => {
+    if (!confirm('Rejeter et supprimer cet avis ?')) return;
+    const pending = load(KEY_PENDING).filter(a => a.id !== id);
+    save(KEY_PENDING, pending);
+    renderAll();
+  };
+
+  (window as any).remove = (id: number) => {
+    if (!confirm('Supprimer cet avis validé ?')) return;
+    const approved = load(KEY_APPROVED).filter(a => a.id !== id);
+    save(KEY_APPROVED, approved);
+    renderAll();
+  };
+
+  (window as any).showTab = showTab;
+</script>

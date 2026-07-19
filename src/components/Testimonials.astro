@@ -1,0 +1,223 @@
+---
+const temoignages = [
+  {
+    nom: "Fatima B.",
+    ville: "Bruxelles",
+    date: "Juin 2026",
+    texte: "Une expérience inoubliable. Halal Sunnah a géré chaque détail avec une attention remarquable. Je me suis concentrée uniquement sur ma spiritualité. Je recommande vivement.",
+    etoiles: 5,
+  },
+  {
+    nom: "Youssef M.",
+    ville: "Liège",
+    date: "Mai 2026",
+    texte: "Service impeccable du début à la fin. L'équipe est disponible, à l'écoute et vraiment professionnelle. Je recommande à toute ma famille.",
+    etoiles: 5,
+  },
+  {
+    nom: "Amina K.",
+    ville: "Paris",
+    date: "Avril 2026",
+    texte: "J'avais des craintes pour l'organisation mais tout était parfait. Hôtel, transport, visites — rien n'a été laissé au hasard. Jazakallah khayran.",
+    etoiles: 5,
+  },
+  {
+    nom: "Karim D.",
+    ville: "Lyon",
+    date: "Mars 2026",
+    texte: "Halal Sunnah m'a accompagné pour l'Omra Badal de ma mère défunte. Ils ont été d'un soutien exceptionnel dans ce moment si important.",
+    etoiles: 5,
+  },
+  {
+    nom: "Nadia R.",
+    ville: "Marseille",
+    date: "Février 2026",
+    texte: "Magnifique organisation, tout était pensé dans les moindres détails. La visite de Médine était particulièrement émouvante. Barak Allahu fikoum.",
+    etoiles: 5,
+  },
+  {
+    nom: "Ibrahim S.",
+    ville: "Bruxelles",
+    date: "Janvier 2026",
+    texte: "Deuxième Omra avec Halal Sunnah et toujours aussi satisfait. Une agence de confiance qui met la spiritualité au cœur du voyage.",
+    etoiles: 5,
+  },
+];
+---
+
+<section class="py-24 relative overflow-hidden" style="background: var(--sand);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- En-tête -->
+    <div class="text-center mb-14 reveal">
+      <span class="eyebrow mb-5">Témoignages</span>
+      <h2 class="font-heading font-bold" style="font-size: clamp(1.7rem, 3vw, 2.4rem); color: var(--ink);">
+        Avis clients
+      </h2>
+    </div>
+
+    <!-- Carrousel -->
+    <div class="relative reveal">
+
+      <button id="testi-prev" class="testi-arrow absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-20" aria-label="Témoignages précédents">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <button id="testi-next" class="testi-arrow absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-20" aria-label="Témoignages suivants">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+      <div class="overflow-hidden mx-8">
+        <div id="testi-track" class="flex gap-5" style="transition: transform 0.7s var(--ease-expo);">
+          {temoignages.map((t) => (
+            <div class="testi-card flex-shrink-0 w-full sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] bg-white rounded-2xl p-8 flex flex-col justify-between min-h-[340px]">
+              <div>
+                <!-- Guillemet doré -->
+                <div class="flex items-start justify-between mb-5">
+                  <div class="flex gap-1">
+                    {Array(t.etoiles).fill(0).map(() => (
+                      <svg class="w-4 h-4" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <span class="font-heading select-none" style="font-size: 3rem; line-height: 0.6; color: rgba(201,162,75,0.35);">”</span>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed italic">
+                  {t.texte}
+                </p>
+              </div>
+              <div class="mt-8 pt-5" style="border-top: 1px solid rgba(201,162,75,0.18);">
+                <p class="font-heading font-semibold text-base" style="color: var(--gold-deep);">{t.nom}</p>
+                <p class="text-gray-400 text-xs uppercase tracking-[0.18em] mt-0.5">{t.ville} — {t.date}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Points -->
+    <div id="testi-dots" class="flex justify-center gap-2 mt-10"></div>
+
+  </div>
+</section>
+
+<style>
+  #testi-track {
+    align-items: stretch;
+  }
+
+  .testi-card {
+    border: 1px solid rgba(6, 43, 82, 0.07);
+    box-shadow: 0 4px 18px -8px rgba(6, 43, 82, 0.1);
+    transition:
+      transform 0.55s var(--ease-expo),
+      box-shadow 0.55s var(--ease-expo),
+      border-color 0.4s;
+  }
+  .testi-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 50px -20px rgba(6, 43, 82, 0.22);
+    border-color: rgba(201, 162, 75, 0.35);
+  }
+
+  .testi-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy-900);
+    color: #ffffff;
+    box-shadow: 0 10px 24px -10px rgba(6, 43, 82, 0.5);
+    transition:
+      transform 0.4s var(--ease-expo),
+      background-color 0.4s,
+      color 0.4s;
+  }
+  .testi-arrow:hover {
+    background: var(--gold);
+    color: var(--navy-950);
+    transform: translateY(-50%) scale(1.1);
+  }
+</style>
+
+<script>
+  function initTestimonials() {
+    const track = document.getElementById("testi-track") as HTMLElement | null;
+    if (!track || track.dataset.init === "1") return;
+    track.dataset.init = "1";
+
+    const dotsContainer = document.getElementById("testi-dots") as HTMLElement;
+    const cards = track.querySelectorAll<HTMLElement>(".testi-card");
+    const prevBtn = document.getElementById("testi-prev") as HTMLButtonElement;
+    const nextBtn = document.getElementById("testi-next") as HTMLButtonElement;
+
+    let current = 0;
+    let perPage = 3;
+
+    function getPerPage() {
+      if (window.innerWidth < 640) return 1;
+      if (window.innerWidth < 1024) return 2;
+      return 3;
+    }
+
+    function totalPages() {
+      return Math.ceil(cards.length / perPage);
+    }
+
+    function buildDots() {
+      dotsContainer.innerHTML = "";
+      for (let i = 0; i < totalPages(); i++) {
+        const dot = document.createElement("button");
+        dot.setAttribute("aria-label", `Page ${i + 1}`);
+        dot.style.cssText = "height:3px; border-radius:9999px; transition:all 0.45s cubic-bezier(0.16,1,0.3,1);";
+        dot.addEventListener("click", () => goTo(i));
+        dotsContainer.appendChild(dot);
+      }
+      updateDots();
+    }
+
+    function updateDots() {
+      dotsContainer.querySelectorAll("button").forEach((d, i) => {
+        d.style.width = i === current ? "2rem" : "8px";
+        d.style.background = i === current ? "#C9A24B" : "rgba(6,43,82,0.2)";
+      });
+    }
+
+    function goTo(index: number) {
+      current = (index + totalPages()) % totalPages();
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 20;
+      const offset = current * perPage * (cardWidth + gap);
+      track!.style.transform = `translateX(-${offset}px)`;
+      updateDots();
+    }
+
+    function setup() {
+      perPage = getPerPage();
+      const pct = perPage === 1 ? "100%" : perPage === 2 ? "calc(50% - 10px)" : "calc(33.333% - 14px)";
+      cards.forEach((c) => (c.style.width = pct));
+      if (current >= totalPages()) current = 0;
+      buildDots();
+      goTo(current);
+    }
+
+    prevBtn?.addEventListener("click", () => goTo(current - 1));
+    nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+    setup();
+    window.addEventListener("resize", () => {
+      if (document.body.contains(track)) setup();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initTestimonials);
+</script>
