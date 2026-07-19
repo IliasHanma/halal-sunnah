@@ -11,8 +11,8 @@
       class="w-full h-full object-cover"
       style="object-position: center 62%; filter: brightness(1.08) contrast(1.06) saturate(1.08);"
     />
-    <!-- Dégradé bleu nuit : gauche sombre -> droite transparente -->
-    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(6,43,82,0.97) 0%, rgba(6,43,82,0.93) 30%, rgba(6,43,82,0.62) 45%, rgba(6,43,82,0.08) 62%, rgba(6,43,82,0) 75%);"></div>
+    <!-- Dégradé bleu nuit : gauche sombre -> droite transparente (vertical sur mobile) -->
+    <div class="hero-overlay absolute inset-0"></div>
     <!-- Vignette guidant le regard vers la Kaaba -->
     <div class="absolute inset-0" style="background: radial-gradient(ellipse 55% 65% at 72% 58%, transparent 40%, rgba(0,0,0,0.22) 100%); box-shadow: inset 0 0 160px rgba(0,0,0,0.3);"></div>
     <!-- Voile bas pour fondre vers la section suivante -->
@@ -30,9 +30,9 @@
         </p>
 
         <!-- Titre : révélation par lignes masquées -->
-        <h1 class="font-heading font-bold mb-7 leading-[1.08]" style="font-size: clamp(2.6rem, 5.6vw, 4.6rem); text-shadow: 0 6px 40px rgba(0,0,0,0.35);">
-          <span class="line-mask"><span class="line-inner text-white" style="animation-delay: 0.25s;">Votre Omra,</span></span>
-          <span class="line-mask"><span class="line-inner gold-shimmer" style="animation-delay: 0.42s;">notre engagement.</span></span>
+        <h1 class="hero-title font-heading font-bold mb-7 leading-[1.08]" style="font-size: clamp(2.6rem, 5.6vw, 4.6rem); text-shadow: 0 6px 40px rgba(0,0,0,0.35);">
+          <span class="line-mask"><span class="line-inner hero-l1 text-white" style="animation-delay: 0.25s;">Votre Omra,</span></span>
+          <span class="line-mask"><span class="line-inner hero-l2 gold-shimmer" style="animation-delay: 0.42s;">notre engagement.</span></span>
         </h1>
 
         <!-- Filet doré animé -->
@@ -161,9 +161,82 @@
     50% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 0 0 12px rgba(201, 162, 75, 0); }
   }
 
+  /* Voile de lisibilité : latéral sur desktop */
+  .hero-overlay {
+    background: linear-gradient(to right, rgba(6,43,82,0.97) 0%, rgba(6,43,82,0.93) 30%, rgba(6,43,82,0.62) 45%, rgba(6,43,82,0.08) 62%, rgba(6,43,82,0) 75%);
+  }
+
   @media (max-width: 1023px) {
     #hero-bg {
       object-position: 68% center;
+    }
+  }
+
+  /* ========== Mobile : mise en page centrée, élégante ========== */
+  @media (max-width: 767px) {
+    /* Voile vertical : sombre en haut et en bas, image visible au centre */
+    .hero-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(4, 27, 54, 0.92) 0%,
+        rgba(4, 27, 54, 0.72) 26%,
+        rgba(4, 27, 54, 0.42) 52%,
+        rgba(4, 27, 54, 0.68) 78%,
+        rgba(3, 20, 42, 0.9) 100%
+      );
+    }
+
+    /* Tout le contenu centré */
+    #hero .max-w-\[620px\] {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    /* Slogan */
+    #hero p.hero-fade {
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      line-height: 1.8;
+    }
+
+    /* Titre façon "Les Cavaliers" :
+       ligne 1 blanche fine espacée, ligne 2 or, grande, en capitales */
+    .hero-title {
+      font-size: 1rem !important;
+      line-height: 1.5 !important;
+    }
+    .hero-l1 {
+      display: inline-block;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .hero-l2 {
+      display: inline-block;
+      font-size: clamp(1.35rem, 6.4vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding-left: 0.1em; /* compense le letter-spacing pour un vrai centrage */
+    }
+
+    /* Filet doré centré */
+    #hero .gold-line-grow {
+      width: 6rem;
+    }
+    #hero .flex.items-center.gap-2 {
+      justify-content: center;
+    }
+
+    /* Paragraphe centré */
+    #hero p.text-white\/85 {
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 </style>
