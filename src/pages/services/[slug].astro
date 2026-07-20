@@ -62,8 +62,8 @@ const service = services.find((s) => s.slug === slug)!;
 
             <div id="medine-journey">
               <!-- Timeline with circular thumbnails on a curved path -->
-              <div class="relative mb-7 overflow-x-auto sm:overflow-visible">
-                <div class="relative flex items-start justify-start sm:justify-center min-w-max sm:min-w-0 px-2 sm:px-0 pb-2">
+              <div id="mj-scroll" class="relative mb-7 overflow-x-auto sm:overflow-visible" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                <div class="relative flex items-start justify-start sm:justify-center min-w-max sm:min-w-0 px-4 sm:px-0 py-2">
 
                   <!-- Curved journey path (desktop) -->
                   <svg class="hidden sm:block absolute pointer-events-none" style="left:0; right:0; top:43px; width:100%; height:6px; overflow:visible;" preserveAspectRatio="none" viewBox="0 0 1000 6">
@@ -88,10 +88,10 @@ const service = services.find((s) => s.slug === slug)!;
 
               <!-- Slider card -->
               <div class="relative max-w-[720px] mx-auto">
-                <button id="mj-prev" type="button" class="mj-arrow hidden sm:flex absolute -left-[76px] top-[38%] -translate-y-1/2 z-10 items-center justify-center bg-white transition-all duration-300" style="width:60px; height:60px; border-radius:9999px; box-shadow:0 10px 28px rgba(15,39,71,0.14);" aria-label="Lieu précédent">
+                <button id="mj-prev" type="button" class="mj-arrow flex absolute -left-[76px] top-[38%] -translate-y-1/2 z-10 items-center justify-center bg-white transition-all duration-300" style="width:60px; height:60px; border-radius:9999px; box-shadow:0 10px 28px rgba(15,39,71,0.14);" aria-label="Lieu précédent">
                   <svg class="w-5 h-5 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="#0F2747" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button id="mj-next" type="button" class="mj-arrow hidden sm:flex absolute -right-[76px] top-[38%] -translate-y-1/2 z-10 items-center justify-center bg-white transition-all duration-300" style="width:60px; height:60px; border-radius:9999px; box-shadow:0 10px 28px rgba(15,39,71,0.14);" aria-label="Lieu suivant">
+                <button id="mj-next" type="button" class="mj-arrow flex absolute -right-[76px] top-[38%] -translate-y-1/2 z-10 items-center justify-center bg-white transition-all duration-300" style="width:60px; height:60px; border-radius:9999px; box-shadow:0 10px 28px rgba(15,39,71,0.14);" aria-label="Lieu suivant">
                   <svg class="w-5 h-5 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="#0F2747" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
 
@@ -219,6 +219,34 @@ const service = services.find((s) => s.slug === slug)!;
     stroke: #ffffff !important;
   }
 
+  /* Masquer la barre de défilement de la frise */
+  #mj-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Mobile : flèches par-dessus la photo de la carte, à portée de pouce */
+  @media (max-width: 639px) {
+    #mj-prev,
+    #mj-next {
+      width: 44px !important;
+      height: 44px !important;
+      top: 140px; /* centre de la photo (280px de haut) */
+      background: rgba(255, 255, 255, 0.92) !important;
+      box-shadow: 0 6px 18px rgba(15, 39, 71, 0.25) !important;
+    }
+    #mj-prev {
+      left: 12px;
+    }
+    #mj-next {
+      right: 12px;
+    }
+    /* Flèche masquée quand on est au bout du parcours */
+    .mj-arrow[disabled] {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mj-img.kb-active { animation: none; }
   }
@@ -238,12 +266,27 @@ const service = services.find((s) => s.slug === slug)!;
     const total = slides.length;
     let current = 0;
 
+    const scroller = document.getElementById('mj-scroll');
+
     function goTo(index: number) {
       current = Math.max(0, Math.min(total - 1, index));
 
       if (track) track.style.transform = `translateX(-${current * 100}%)`;
 
       thumbs.forEach((t, i) => t.classList.toggle('is-active', i === current));
+
+      // Frise : recentre automatiquement la vignette active (mobile)
+      const activeThumb = thumbs[current];
+      if (scroller && activeThumb && scroller.scrollWidth > scroller.clientWidth) {
+        scroller.scrollTo({
+          left: activeThumb.offsetLeft - (scroller.clientWidth - activeThumb.offsetWidth) / 2,
+          behavior: 'smooth',
+        });
+      }
+
+      // Flèches désactivées en bout de parcours
+      prevBtn?.toggleAttribute('disabled', current === 0);
+      nextBtn?.toggleAttribute('disabled', current === total - 1);
 
       if (pathGold) {
         const progress = total > 1 ? current / (total - 1) : 1;
@@ -267,6 +310,22 @@ const service = services.find((s) => s.slug === slug)!;
     thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => goTo(i)));
     prevBtn?.addEventListener('click', () => goTo(current - 1));
     nextBtn?.addEventListener('click', () => goTo(current + 1));
+
+    // Swipe tactile sur la carte : glisser vers la gauche = étape suivante
+    const card = track.parentElement;
+    let startX = 0;
+    let startY = 0;
+    card?.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    card?.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        goTo(dx < 0 ? current + 1 : current - 1);
+      }
+    }, { passive: true });
 
     goTo(0);
   }
