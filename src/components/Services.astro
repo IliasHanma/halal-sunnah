@@ -29,7 +29,7 @@ import { services } from "../data/services";
           <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(6,43,82,0.88), rgba(6,43,82,0.18) 55%, transparent);"></div>
           <div class="svc-tile-line absolute top-0 left-0 right-0 h-0.5" style="background: linear-gradient(to right, var(--gold-light), var(--gold));"></div>
           <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-            <h3 class="text-white font-bold text-sm uppercase tracking-wide leading-tight">{service.title}</h3>
+            <h3 class="svc-tile-title text-white font-bold text-sm uppercase tracking-wide leading-tight">{service.title}</h3>
             <p class="svc-tile-sub text-xs mt-1.5" style="color: #b8cce4;">{service.subtitle}</p>
             <span class="svc-tile-cta inline-flex items-center gap-1.5 text-xs font-semibold mt-2" style="color: var(--gold-light);">
               Découvrir
@@ -88,6 +88,18 @@ import { services } from "../data/services";
   }
   .svc-tile:hover .svc-tile-line {
     transform: scaleX(1);
+  }
+
+  /* Alignement uniforme : chaque titre occupe la place de 2 lignes
+     (texte calé en bas), chaque sous-titre celle de 2 lignes — les
+     textes démarrent ainsi à la même hauteur sur toutes les cartes */
+  .svc-tile-title {
+    min-height: 2.5em;
+    display: flex;
+    align-items: flex-end;
+  }
+  .svc-tile-sub {
+    min-height: 2.7em;
   }
 
   .svc-tile-sub,
