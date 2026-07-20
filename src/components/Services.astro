@@ -90,13 +90,11 @@ import { services } from "../data/services";
     transform: scaleX(1);
   }
 
-  /* Alignement uniforme : chaque titre occupe la place de 2 lignes
-     (texte calé en bas), chaque sous-titre celle de 2 lignes — les
-     textes démarrent ainsi à la même hauteur sur toutes les cartes */
+  /* Alignement uniforme : chaque titre occupe la place de 2 lignes,
+     texte calé en HAUT — tous les titres démarrent à la même hauteur,
+     et les sous-titres aussi (zone de 2 lignes réservée) */
   .svc-tile-title {
     min-height: 2.5em;
-    display: flex;
-    align-items: flex-end;
   }
   .svc-tile-sub {
     min-height: 2.7em;
