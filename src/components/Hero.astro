@@ -178,6 +178,11 @@
 
   /* ========== Mobile : mise en page centrée, élégante ========== */
   @media (max-width: 767px) {
+    /* L'image mobile est déjà pré-cadrée : on l'affiche centrée telle quelle */
+    #hero-bg {
+      object-position: center;
+    }
+
     /* Voile vertical : sombre en haut et en bas, image visible au centre */
     .hero-overlay {
       background: linear-gradient(
