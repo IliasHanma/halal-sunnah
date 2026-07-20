@@ -32,6 +32,36 @@ const { title, description = "Halal Sunnah — Agence spécialisée dans l'organ
       rel="stylesheet"
     />
     <ClientRouter />
+
+    <!-- Google Analytics (GA4) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-TWHHV1W08Y"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      // send_page_view: false — on envoie nous-mêmes la page vue à chaque
+      // navigation (le site utilise les View Transitions d'Astro)
+      gtag("config", "G-TWHHV1W08Y", { send_page_view: false });
+
+      document.addEventListener("astro:page-load", function () {
+        gtag("event", "page_view", {
+          page_location: location.href,
+          page_title: document.title,
+        });
+      });
+
+      // Suivi des clics WhatsApp (l'indicateur commercial)
+      document.addEventListener("click", function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+        if (a) {
+          var zone = a.closest("section, header, footer");
+          gtag("event", "whatsapp_click", {
+            zone: (zone && (zone.id || zone.tagName.toLowerCase())) || "page",
+            page: location.pathname,
+          });
+        }
+      });
+    </script>
     <noscript>
       <style>
         .reveal, .reveal-left, .reveal-right {
