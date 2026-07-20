@@ -156,7 +156,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     padding-top: 80px;
     background: #03142a;
     background: linear-gradient(180deg, #03142a 0%, #062b52 100%);
-    z-index: 40; /* sous la barre du header (z-50), au-dessus de tout le reste */
+    z-index: 49; /* sous la barre du header (z-50), au-dessus de tout le reste
+                    (y compris le médaillon logo du hero, z-40, et WhatsApp) */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -187,6 +188,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   }
   .mobile-link:hover {
     color: var(--gold);
+  }
+
+  /* Menu ouvert : on masque les boutons flottants (WhatsApp, remonter)
+     pour un écran de menu totalement épuré */
+  :global(body:has(#mobile-menu.open) #floating-actions) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
   }
 </style>
 
