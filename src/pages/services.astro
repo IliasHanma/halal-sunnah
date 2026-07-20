@@ -186,6 +186,10 @@ const services = [
       transform: none !important;
       opacity: 1 !important;
       filter: none !important;
+      /* Ordre d'empilement : chaque carte passe DEVANT la précédente.
+         (le :hover déclenché au toucher sur iOS donnait z-index:2 à la
+         première carte, qui restait alors au-dessus des suivantes) */
+      z-index: calc(1 + var(--i)) !important;
     }
     #svc-grid .svc-card:last-child {
       margin-bottom: 0;
