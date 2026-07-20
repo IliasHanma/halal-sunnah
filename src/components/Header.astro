@@ -82,7 +82,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 <style>
   #header {
-    background: rgba(4, 38, 80, 0.97);
+    /* Même bleu nuit que le footer (--navy-950 : #03142a) */
+    background: rgba(3, 20, 42, 0.97);
     transition:
       transform 0.55s var(--ease-expo),
       box-shadow 0.45s var(--ease-smooth);
