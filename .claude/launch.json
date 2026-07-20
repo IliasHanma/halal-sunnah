@@ -4,9 +4,9 @@
     {
       "name": "halal-sunnah",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
-      "runtimeArgs": ["astro", "dev", "--host"],
+      "runtimeArgs": ["astro", "dev", "--host", "--port", "4400"],
       "cwd": "C:\\Users\\A\\Desktop\\Halal Sunnah",
-      "port": 4321,
+      "port": 4400,
       "autoPort": false
     }
   ]

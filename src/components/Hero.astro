@@ -4,13 +4,17 @@
 <section id="hero" class="relative w-full min-h-screen" style="background: var(--navy-900);">
   <!-- Photo de fond -->
   <div class="absolute inset-0 z-0 overflow-hidden">
-    <img
-      id="hero-bg"
-      src="/images/mecque-hero-upscaled.jpg"
-      alt="La Kaaba - La Mecque"
-      class="w-full h-full object-cover"
-      style="object-position: center 62%; filter: brightness(1.08) contrast(1.06) saturate(1.08);"
-    />
+    <picture class="block w-full h-full">
+      <!-- Mobile : photo verticale haute résolution (nette sur écrans 2x/3x) -->
+      <source media="(max-width: 767px)" srcset="/images/hero-mobile.jpg" />
+      <img
+        id="hero-bg"
+        src="/images/mecque-hero-upscaled.jpg"
+        alt="La Kaaba - La Mecque"
+        class="w-full h-full object-cover"
+        style="object-position: center 62%; filter: brightness(1.08) contrast(1.06) saturate(1.08);"
+      />
+    </picture>
     <!-- Dégradé bleu nuit : gauche sombre -> droite transparente (vertical sur mobile) -->
     <div class="hero-overlay absolute inset-0"></div>
     <!-- Vignette guidant le regard vers la Kaaba -->
