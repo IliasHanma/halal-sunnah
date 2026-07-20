@@ -167,16 +167,25 @@ const services = [
       display: block;
     }
     #svc-grid .svc-card {
+      position: -webkit-sticky;
       position: sticky;
       top: calc(6rem + var(--i) * 12px); /* décalage progressif : bords empilés visibles */
       display: block;
       margin-bottom: 1.5rem;
-      aspect-ratio: 3 / 4 !important;
-      max-height: 62vh;
+      aspect-ratio: auto !important;
+      height: 58vh;
+      height: 58svh;
       border: 1px solid rgba(201, 162, 75, 0.45);
       box-shadow:
         0 -14px 34px -16px rgba(3, 20, 42, 0.5),
         0 22px 44px -18px rgba(3, 20, 42, 0.45) !important;
+      /* iOS : will-change + transitions sur un élément sticky provoquent
+         des artefacts de rendu (contenu dupliqué) — on désactive tout */
+      will-change: auto;
+      transition: none;
+      transform: none !important;
+      opacity: 1 !important;
+      filter: none !important;
     }
     #svc-grid .svc-card:last-child {
       margin-bottom: 0;
