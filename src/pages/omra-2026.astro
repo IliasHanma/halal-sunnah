@@ -1,0 +1,182 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const inclusions = [
+  { label: "Vols aller-retour", detail: "Au départ de Bruxelles ou de Paris", icon: "plane" },
+  { label: "Visa Omra", detail: "Toutes les démarches prises en charge", icon: "visa" },
+  { label: "Hôtels", detail: "Bosphorus (Médine) · Voco (La Mecque)", icon: "bed" },
+  { label: "Transports", detail: "Tous les trajets sur place inclus", icon: "car" },
+  { label: "Petits déjeuners", detail: "Servis chaque matin à l'hôtel", icon: "coffee" },
+];
+
+const formules = [
+  { key: "double", label: "Chambre double", prix: "1 750 €", detail: "2 personnes par chambre" },
+  { key: "triple", label: "Chambre triple", prix: "1 550 €", detail: "3 personnes par chambre", star: true },
+  { key: "quadruple", label: "Chambre quadruple", prix: "1 350 €", detail: "4 personnes par chambre" },
+];
+---
+
+<Layout title="Omra 2026 — Halal Sunnah" description="Réservez votre Omra 2026 (1448) : forfait tout inclus au départ de Bruxelles ou de Paris. Vols, visa, hôtels, transports et petits déjeuners.">
+  <Header />
+  <main>
+
+    <!-- Hero sobre -->
+    <section class="relative pt-36 pb-20 text-center" style="background: var(--navy-950);">
+      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 55% 60% at 50% 100%, rgba(201,162,75,0.1), transparent 70%);"></div>
+      <div class="relative max-w-3xl mx-auto px-6">
+        <span class="eyebrow mb-6" style="opacity:0; animation: fadeUp 1s var(--ease-expo) 0.1s forwards;">Omra 2026 · 1448</span>
+        <h1 class="font-heading font-bold text-white leading-tight mb-5" style="font-size: clamp(2.2rem, 5vw, 3.6rem); opacity:0; animation: fadeUp 1.1s var(--ease-expo) 0.25s forwards;">
+          Réserve ta <span style="color: var(--gold-light);">Omra</span>
+        </h1>
+        <p class="text-lg font-light mb-0" style="color: #b8cce4; opacity:0; animation: fadeUp 1.1s var(--ease-expo) 0.4s forwards;">
+          Forfait tout inclus — départ de Bruxelles ou de Paris.
+        </p>
+      </div>
+    </section>
+
+    <!-- Dates -->
+    <section class="py-16" style="background: var(--mist);">
+      <div class="max-w-3xl mx-auto px-6">
+        <div class="grid sm:grid-cols-2 gap-4 reveal" data-stagger="90">
+          <div class="bg-white rounded-2xl px-7 py-6" style="box-shadow: 0 8px 30px rgba(11,44,93,0.07);">
+            <p class="text-[0.65rem] font-semibold tracking-[0.2em] mb-2" style="color: var(--gold-deep);">DÉPART 1</p>
+            <p class="font-heading font-bold" style="font-size: 1.35rem; color: var(--ink);">24 septembre → 3 octobre</p>
+            <p class="text-sm text-gray-400 mt-1.5">10 jours · Médine &amp; La Mecque</p>
+          </div>
+          <div class="bg-white rounded-2xl px-7 py-6" style="box-shadow: 0 8px 30px rgba(11,44,93,0.07);">
+            <p class="text-[0.65rem] font-semibold tracking-[0.2em] mb-2" style="color: var(--gold-deep);">DÉPART 2</p>
+            <p class="font-heading font-bold" style="font-size: 1.35rem; color: var(--ink);">6 novembre → 15 novembre</p>
+            <p class="text-sm text-gray-400 mt-1.5">10 jours · Médine &amp; La Mecque</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inclusions -->
+    <section class="py-16 bg-white">
+      <div class="max-w-3xl mx-auto px-6">
+        <div class="text-center mb-12 reveal">
+          <span class="eyebrow mb-4">Forfait tout inclus</span>
+          <h2 class="font-heading font-bold" style="font-size: clamp(1.6rem, 2.8vw, 2.2rem); color: var(--ink);">
+            Tout est pris en charge
+          </h2>
+        </div>
+        <ul class="divide-y divide-gray-100 reveal">
+          {inclusions.map((inc) => (
+            <li class="flex items-center gap-5 py-5">
+              <span class="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center" style="background: rgba(201,162,75,0.1); color: var(--gold-deep);">
+                {inc.icon === "plane" && <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>}
+                {inc.icon === "visa" && <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M7 9h4M7 12h2M15.5 11a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>}
+                {inc.icon === "bed" && <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v11M3 14h18v4M7 11V9a1 1 0 011-1h3v3M3 11h18"/></svg>}
+                {inc.icon === "car" && <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 17H3v-5l2-5h12l3 5v5h-2M7 17a2 2 0 104 0M13 17a2 2 0 104 0M11 17h2"/></svg>}
+                {inc.icon === "coffee" && <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10h12v6a4 4 0 01-4 4H8a4 4 0 01-4-4v-6zM16 11h1.5a2.5 2.5 0 010 5H16M7 7V5M10 7V4M13 7V5"/></svg>}
+              </span>
+              <div class="min-w-0">
+                <p class="font-semibold" style="color: var(--ink);">{inc.label}</p>
+                <p class="text-sm text-gray-400">{inc.detail}</p>
+              </div>
+              <svg class="w-5 h-5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: var(--gold);"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Formules -->
+    <section id="formules" class="py-16" style="background: var(--mist);">
+      <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-12 reveal">
+          <span class="eyebrow mb-4">Formules</span>
+          <h2 class="font-heading font-bold" style="font-size: clamp(1.6rem, 2.8vw, 2.2rem); color: var(--ink);">
+            Choisissez votre chambre
+          </h2>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-5 reveal" data-stagger="90">
+          {formules.map((f) => (
+            <div id={`formule-${f.key}`} class={`of-card relative bg-white rounded-3xl px-6 py-9 text-center ${f.star ? "of-card-star" : ""}`}>
+              {f.star && (
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 text-[0.6rem] font-bold tracking-[0.16em] px-3.5 py-1 rounded-full" style="background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy-950);">
+                  POPULAIRE
+                </span>
+              )}
+              <p class="text-[0.65rem] font-semibold tracking-[0.2em] mb-4 text-gray-400">{f.label.toUpperCase()}</p>
+              <p class="font-heading font-bold mb-1" style="font-size: 2.4rem; color: var(--ink);">{f.prix}</p>
+              <p class="text-xs text-gray-400 mb-2">par personne</p>
+              <p class="text-sm text-gray-500 mb-7">{f.detail}</p>
+              <a
+                href={`https://wa.me/32497570058?text=${encodeURIComponent(`As salamo 3alaykoum, je souhaite réserver la formule ${f.label.toLowerCase()} (${f.prix} par personne) pour la Omra 2026.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={f.star
+                  ? "btn-gold inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full text-xs font-bold tracking-[0.1em] uppercase"
+                  : "of-btn inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-full text-xs font-bold tracking-[0.1em] uppercase"}
+              >
+                Réserver
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-sm text-gray-400 mt-10 reveal">
+          Places limitées — contactez-nous sur WhatsApp au +32 497 57 00 58.
+        </p>
+      </div>
+    </section>
+
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .of-card {
+    box-shadow: 0 10px 40px rgba(11, 44, 93, 0.07);
+    border: 1px solid transparent;
+    transition:
+      transform 0.5s var(--ease-expo),
+      box-shadow 0.5s var(--ease-expo),
+      border-color 0.5s var(--ease-smooth),
+      opacity 1s var(--ease-expo);
+  }
+  .of-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 60px -18px rgba(11, 44, 93, 0.18);
+  }
+  .of-card-star {
+    border-color: var(--gold);
+  }
+
+  /* Formule sélectionnée depuis la page d'accueil */
+  .of-card.is-selected {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.15), 0 28px 60px -18px rgba(11, 44, 93, 0.18);
+  }
+
+  .of-btn {
+    color: var(--navy-900, #062b52);
+    border: 1px solid rgba(11, 44, 93, 0.25);
+    transition: background-color 0.35s, color 0.35s, border-color 0.35s;
+  }
+  .of-btn:hover {
+    background: var(--navy-950);
+    color: #fff;
+    border-color: var(--navy-950);
+  }
+</style>
+
+<script>
+  // Met en évidence la formule choisie depuis la page d'accueil (?formule=triple)
+  function initOmra2026() {
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("formule");
+    if (!key) return;
+    const card = document.getElementById(`formule-${key}`);
+    if (!card || card.dataset.done === "1") return;
+    card.dataset.done = "1";
+    card.classList.add("is-selected");
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 350);
+  }
+  document.addEventListener("astro:page-load", initOmra2026);
+</script>
