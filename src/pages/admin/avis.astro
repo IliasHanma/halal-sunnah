@@ -33,13 +33,13 @@ import Footer from "../../components/Footer.astro";
         <!-- Avis en attente -->
         <div id="pending-tab" class="tab-content">
           <div id="pending-list" class="space-y-4"></div>
-          <p id="pending-empty" class="text-center text-gray-400 py-8">Aucun avis en attente.</p>
+          <p id="pending-empty" class="text-center text-gray-400 py-8">Chargement...</p>
         </div>
 
         <!-- Avis approuvés -->
         <div id="approved-tab" class="tab-content hidden">
           <div id="approved-list" class="space-y-4"></div>
-          <p id="approved-empty" class="text-center text-gray-400 py-8">Aucun avis approuvé.</p>
+          <p id="approved-empty" class="text-center text-gray-400 py-8">Chargement...</p>
         </div>
 
       </div>
@@ -133,19 +133,15 @@ import Footer from "../../components/Footer.astro";
     display: flex;
     gap: 2px;
   }
-
-  .star {
-    width: 14px;
-    height: 14px;
-  }
 </style>
 
 <script>
+  import { db } from "../../lib/firebase";
+  import { collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+
   function initAdminAvis() {
     const GOLD = "#C9A24B";
     const EMPTY = "#D1D5DB";
-    const KEY_PENDING = "hs_avis_pending";
-    const KEY_APPROVED = "hs_avis_approved";
 
     function starsSVG(note: number) {
       return [1, 2, 3, 4, 5]
@@ -165,7 +161,7 @@ import Footer from "../../components/Footer.astro";
     function renderAvisCard(avis: any, isPending: boolean) {
       const init = avis.nom.slice(0, 2).toUpperCase();
       const date = formatDate(avis.date);
-      const html = `
+      return `
         <div class="avis-card">
           <div class="avis-avatar" style="background: #062B52;">${init}</div>
           <div class="avis-header">
@@ -186,101 +182,87 @@ import Footer from "../../components/Footer.astro";
           </div>
         </div>
       `;
-      return html;
     }
 
-    function refresh() {
-      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
-      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
-
+    async function refresh() {
       const pendingList = document.getElementById("pending-list")!;
       const pendingEmpty = document.getElementById("pending-empty")!;
       const approvedList = document.getElementById("approved-list")!;
       const approvedEmpty = document.getElementById("approved-empty")!;
 
-      document.getElementById("pending-count")!.textContent = String(pending.length);
-      document.getElementById("approved-count")!.textContent = String(approved.length);
+      try {
+        const pendingQ = query(
+          collection(db, "avis"),
+          where("status", "==", "pending"),
+          orderBy("date", "desc")
+        );
+        const approvedQ = query(
+          collection(db, "avis"),
+          where("status", "==", "approved"),
+          orderBy("date", "desc")
+        );
 
-      if (pending.length === 0) {
-        pendingList.innerHTML = "";
-        pendingEmpty.classList.remove("hidden");
-      } else {
-        pendingEmpty.classList.add("hidden");
-        pendingList.innerHTML = pending.map((a) => renderAvisCard(a, true)).join("");
+        const [pendingSnap, approvedSnap] = await Promise.all([
+          getDocs(pendingQ),
+          getDocs(approvedQ),
+        ]);
+
+        const pending = pendingSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const approved = approvedSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        document.getElementById("pending-count")!.textContent = String(pending.length);
+        document.getElementById("approved-count")!.textContent = String(approved.length);
+
+        if (pending.length === 0) {
+          pendingList.innerHTML = "";
+          pendingEmpty.textContent = "Aucun avis en attente.";
+          pendingEmpty.classList.remove("hidden");
+        } else {
+          pendingEmpty.classList.add("hidden");
+          pendingList.innerHTML = pending.map(a => renderAvisCard(a, true)).join("");
+        }
+
+        if (approved.length === 0) {
+          approvedList.innerHTML = "";
+          approvedEmpty.textContent = "Aucun avis approuvé.";
+          approvedEmpty.classList.remove("hidden");
+        } else {
+          approvedEmpty.classList.add("hidden");
+          approvedList.innerHTML = approved.map(a => renderAvisCard(a, false)).join("");
+        }
+
+        attachEventListeners();
+      } catch (e) {
+        pendingEmpty.textContent = "Erreur de chargement.";
+        approvedEmpty.textContent = "Erreur de chargement.";
       }
-
-      if (approved.length === 0) {
-        approvedList.innerHTML = "";
-        approvedEmpty.classList.remove("hidden");
-      } else {
-        approvedEmpty.classList.add("hidden");
-        approvedList.innerHTML = approved.map((a) => renderAvisCard(a, false)).join("");
-      }
-
-      attachEventListeners();
     }
 
     function attachEventListeners() {
-      // Boutons d'action
       document.querySelectorAll("[data-action]").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          const id = (btn as HTMLButtonElement).dataset.id;
-          const action = (btn as HTMLButtonElement).dataset.action;
+        btn.addEventListener("click", async () => {
+          const id = (btn as HTMLButtonElement).dataset.id!;
+          const action = (btn as HTMLButtonElement).dataset.action!;
 
           if (action === "approve") {
-            approveAvis(parseInt(id!));
+            await updateDoc(doc(db, "avis", id), { status: "approved" });
           } else if (action === "reject") {
-            rejectAvis(parseInt(id!));
+            await deleteDoc(doc(db, "avis", id));
           } else if (action === "delete") {
-            deleteAvis(parseInt(id!));
+            await deleteDoc(doc(db, "avis", id));
           }
+
+          refresh();
         });
       });
-    }
-
-    function approveAvis(id: number) {
-      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
-      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
-
-      const avis = pending.find((a) => a.id === id);
-      if (!avis) return;
-
-      pending.splice(pending.indexOf(avis), 1);
-      approved.push(avis);
-
-      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
-      localStorage.setItem(KEY_APPROVED, JSON.stringify(approved));
-      refresh();
-    }
-
-    function rejectAvis(id: number) {
-      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
-      const idx = pending.findIndex((a) => a.id === id);
-      if (idx === -1) return;
-
-      pending.splice(idx, 1);
-      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
-      refresh();
-    }
-
-    function deleteAvis(id: number) {
-      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
-      const idx = approved.findIndex((a) => a.id === id);
-      if (idx === -1) return;
-
-      approved.splice(idx, 1);
-      localStorage.setItem(KEY_APPROVED, JSON.stringify(approved));
-      refresh();
     }
 
     // Onglets
     document.querySelectorAll(".tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const tabName = (btn as HTMLButtonElement).dataset.tab;
-
         document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-
         document.querySelectorAll(".tab-content").forEach((t) => t.classList.add("hidden"));
         document.getElementById(`${tabName}-tab`)?.classList.remove("hidden");
       });

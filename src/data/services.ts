@@ -89,13 +89,9 @@ Merci bien`,
       "Navettes organisées vers les lieux de visite",
       "Assistance au retour jusqu'à l'embarquement",
     ],
-    cta: "Demander un devis",
-    ctaHref: "https://wa.me/32497570058",
-    waMessage: `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,
-
-Je suis intéressé(e) par votre service de *Transport / Aéroport* et j'aimerais obtenir un devis pour l'organisation de mes déplacements lors de mon séjour. Pourriez-vous me contacter ?
-
-Merci bien`,
+    cta: "Réserver un transport",
+    ctaHref: "/reservation-transport",
+    waMessage: "",
   },
   {
     slug: "activites",

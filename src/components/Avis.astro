@@ -16,6 +16,7 @@
     <!-- Avis validés -->
     <div id="avis-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12"></div>
     <p id="no-avis" class="text-center text-gray-400 text-sm mb-12 hidden">Aucun avis pour l'instant. Soyez le premier à partager votre expérience !</p>
+    <div id="avis-loading" class="text-center text-gray-400 text-sm mb-12">Chargement des avis...</div>
 
     <!-- Formulaire -->
     <div class="avis-form-card max-w-2xl mx-auto bg-white rounded-3xl p-7 sm:p-10 reveal">
@@ -105,6 +106,9 @@
 </style>
 
 <script>
+  import { db } from "../lib/firebase";
+  import { collection, addDoc, query, where, orderBy, getDocs } from "firebase/firestore";
+
   function initAvis() {
     const submitBtn = document.getElementById("avis-submit");
     if (!submitBtn || submitBtn.dataset.init === "1") return;
@@ -112,8 +116,6 @@
 
     const GOLD = "#C9A24B";
     const EMPTY = "#D1D5DB";
-    const KEY_PENDING = "hs_avis_pending";
-    const KEY_APPROVED = "hs_avis_approved";
     const STAR_LABELS = ["Mauvais", "Passable", "Bien", "Très bien", "Excellent"];
 
     let currentNote = 0;
@@ -170,20 +172,35 @@
       </div>`;
     }
 
-    function displayApproved() {
-      const list: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
+    async function displayApproved() {
       const container = document.getElementById("avis-list")!;
       const empty = document.getElementById("no-avis")!;
-      if (list.length === 0) {
-        container.innerHTML = "";
-        empty.classList.remove("hidden");
-      } else {
-        empty.classList.add("hidden");
-        container.innerHTML = [...list].reverse().map(renderCard).join("");
+      const loading = document.getElementById("avis-loading")!;
+
+      try {
+        const q = query(
+          collection(db, "avis"),
+          where("status", "==", "approved"),
+          orderBy("date", "desc")
+        );
+        const snapshot = await getDocs(q);
+        const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        loading.classList.add("hidden");
+
+        if (list.length === 0) {
+          container.innerHTML = "";
+          empty.classList.remove("hidden");
+        } else {
+          empty.classList.add("hidden");
+          container.innerHTML = list.map(renderCard).join("");
+        }
+      } catch (e) {
+        loading.textContent = "Impossible de charger les avis.";
       }
     }
 
-    submitBtn.addEventListener("click", () => {
+    submitBtn.addEventListener("click", async () => {
       const nom = (document.getElementById("avis-nom") as HTMLInputElement).value.trim();
       const message = (document.getElementById("avis-message") as HTMLTextAreaElement).value.trim();
       if (!nom || !message || currentNote === 0) {
@@ -191,19 +208,35 @@
         return;
       }
 
-      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
-      pending.push({ id: Date.now(), nom, message, note: currentNote, date: new Date().toISOString() });
-      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
+      submitBtn.setAttribute("disabled", "true");
+      submitBtn.textContent = "Envoi en cours...";
 
-      (document.getElementById("avis-nom") as HTMLInputElement).value = "";
-      (document.getElementById("avis-message") as HTMLTextAreaElement).value = "";
-      currentNote = 0;
-      noteInput.value = "0";
-      noteLabel.textContent = "Cliquez pour noter";
-      noteLabel.style.color = "";
-      paintStars(0);
-      document.getElementById("avis-confirme")!.classList.remove("hidden");
-      setTimeout(() => document.getElementById("avis-confirme")?.classList.add("hidden"), 4000);
+      try {
+        await addDoc(collection(db, "avis"), {
+          nom,
+          message,
+          note: currentNote,
+          date: new Date().toISOString(),
+          status: "pending",
+        });
+
+        (document.getElementById("avis-nom") as HTMLInputElement).value = "";
+        (document.getElementById("avis-message") as HTMLTextAreaElement).value = "";
+        currentNote = 0;
+        noteInput.value = "0";
+        noteLabel.textContent = "Cliquez pour noter";
+        noteLabel.style.color = "";
+        paintStars(0);
+        document.getElementById("avis-confirme")!.classList.remove("hidden");
+        setTimeout(() => document.getElementById("avis-confirme")?.classList.add("hidden"), 4000);
+      } catch (e) {
+        alert("Erreur lors de l'envoi. Veuillez réessayer.");
+      }
+
+      submitBtn.removeAttribute("disabled");
+      submitBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+      </svg> Envoyer mon avis`;
     });
 
     displayApproved();
