@@ -1,0 +1,617 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const lieux = [
+  "Aéroport Jeddah",
+  "Hôtel Makkah",
+  "Gare Makkah",
+  "Hôtel Médine",
+  "Aéroport Médine",
+  "Gare Médine",
+];
+---
+
+<Layout title="Réservation Transport — Halal Sunnah" description="Réservez votre transport privé en Arabie Saoudite : transferts aéroport, trajets Médine-Makkah et visite guidée de Médine.">
+  <Header />
+  <main>
+    <!-- Hero -->
+    <section class="relative pt-32 pb-20">
+      <div class="absolute inset-0">
+        <img src="/images/srv-transport.jpg" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-primary-900/85 to-primary-800/90"></div>
+      </div>
+      <div class="relative z-10 max-w-3xl mx-auto px-4 text-center">
+        <div class="mb-6" style="opacity:0; animation: fadeUp 1s var(--ease-expo) 0.1s forwards;">
+          <span class="eyebrow">Transports &amp; transferts</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-heading font-bold text-white mb-4" style="opacity:0; animation: fadeUp 1.1s var(--ease-expo) 0.25s forwards;">Réservation Transport</h1>
+        <p class="text-primary-100 text-lg max-w-xl mx-auto leading-relaxed" style="opacity:0; animation: fadeUp 1.1s var(--ease-expo) 0.4s forwards;">
+          Voyagez sereinement entre les aéroports et les Lieux Saints.
+        </p>
+      </div>
+    </section>
+
+    <!-- Form -->
+    <section class="rform-section">
+      <div class="max-w-2xl mx-auto px-4 sm:px-6">
+        <form id="transport-form" novalidate>
+          <div class="rform-card">
+
+            <!-- ── Route ── -->
+            <div class="route-block">
+              <div class="route-row">
+                <!-- Route line -->
+                <div class="route-line">
+                  <div class="route-dot route-dot-from"></div>
+                  <div class="route-track"></div>
+                  <button type="button" id="swap-btn" class="route-swap" aria-label="Inverser">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
+                  </button>
+                  <div class="route-track"></div>
+                  <div class="route-dot route-dot-to"></div>
+                </div>
+
+                <!-- Fields -->
+                <div class="route-fields">
+                  <div class="route-field">
+                    <span class="rlabel">Départ</span>
+                    <input type="hidden" id="from" name="from" required />
+                    <div class="custom-select" id="cs-from" data-placeholder="Choisir le point de départ">
+                      <button type="button" class="cs-trigger"><span class="cs-text">Choisir le point de départ</span><svg class="cs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
+                      <ul class="cs-dropdown">
+                        {lieux.map(l => <li class="cs-option" data-value={l}>{l}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="route-field">
+                    <span class="rlabel">Arrivée</span>
+                    <input type="hidden" id="to" name="to" required />
+                    <div class="custom-select" id="cs-to" data-placeholder="Choisir la destination">
+                      <button type="button" class="cs-trigger"><span class="cs-text">Choisir la destination</span><svg class="cs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
+                      <ul class="cs-dropdown">
+                        {lieux.map(l => <li class="cs-option" data-value={l}>{l}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Date & Passagers ── -->
+            <div class="detail-row">
+              <div class="detail-field">
+                <span class="rlabel">Date du transfert</span>
+                <div class="input-icon-wrap">
+                  <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  <input type="text" id="date-transfert" name="date-transfert" required placeholder="jj/mm/aaaa" readonly class="rfield rfield-icon" />
+                </div>
+              </div>
+              <div class="detail-field">
+                <span class="rlabel">Passagers</span>
+                <div class="pax-counter">
+                  <button type="button" class="pax-btn" id="pax-minus" aria-label="Moins">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 12h14"/></svg>
+                  </button>
+                  <span id="pax-count" class="pax-value">1</span>
+                  <input type="hidden" id="passagers" name="passagers" value="1" />
+                  <button type="button" class="pax-btn" id="pax-plus" aria-label="Plus">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14m-7-7h14"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Thin separator ── -->
+            <div class="rsep"></div>
+
+            <!-- ── Infos ── -->
+            <div class="info-row">
+              <div class="info-field">
+                <span class="rlabel">Prénom</span>
+                <input type="text" id="prenom" name="prenom" required placeholder="Votre prénom" class="rfield" />
+              </div>
+              <div class="info-field">
+                <span class="rlabel">Nom</span>
+                <input type="text" id="nom" name="nom" required placeholder="Votre nom" class="rfield" />
+              </div>
+            </div>
+            <div class="notes-field">
+              <span class="rlabel">Précisions <span style="color:#adb5bd; font-weight:400;">(facultatif)</span></span>
+              <textarea id="precisions" name="precisions" rows="2" placeholder="Numéro de vol, heure d'arrivée, nombre de bagages…" class="rfield resize-none"></textarea>
+            </div>
+
+            <!-- ── Submit ── -->
+            <button type="submit" id="submit-btn" class="rsubmit">
+              Demander mon transfert
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </button>
+
+            <p class="rtrust">
+              <svg class="w-4 h-4 flex-shrink-0" style="color:var(--gold);" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              Tarif confirmé sur WhatsApp avant le trajet
+            </p>
+
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  /* ====== SECTION ====== */
+  .rform-section {
+    padding: 0 0 5rem;
+    margin-top: -3rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  .rform-card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px 28px;
+    box-shadow:
+      0 1px 0 rgba(201,162,75,0.15),
+      0 24px 48px -16px rgba(3,20,42,0.12);
+  }
+  @media (min-width: 640px) {
+    .rform-card { padding: 44px 40px; }
+  }
+
+  /* ====== LABELS ====== */
+  .rlabel {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-deep, #b08930);
+    margin-bottom: 8px;
+  }
+
+  /* ====== ROUTE BLOCK ====== */
+  .route-block {
+    margin-bottom: 28px;
+  }
+  .route-row {
+    display: flex;
+    gap: 20px;
+  }
+
+  /* Vertical line with dots */
+  .route-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding-top: 30px;
+    flex-shrink: 0;
+    width: 36px;
+  }
+  .route-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .route-dot-from {
+    background: var(--gold);
+    box-shadow: 0 0 0 4px rgba(201,162,75,0.18);
+  }
+  .route-dot-to {
+    background: var(--navy-950);
+    box-shadow: 0 0 0 4px rgba(3,20,42,0.1);
+  }
+  .route-track {
+    width: 2px;
+    flex: 1;
+    min-height: 16px;
+    background: linear-gradient(180deg, var(--gold), rgba(201,162,75,0.2));
+  }
+  .route-track:last-of-type {
+    background: linear-gradient(180deg, rgba(201,162,75,0.2), var(--navy-950));
+  }
+
+  .route-swap {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(201,162,75,0.35);
+    background: white;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+    margin: 4px 0;
+  }
+  .route-swap:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+    transform: rotate(180deg);
+    box-shadow: 0 4px 14px -4px rgba(201,162,75,0.45);
+  }
+
+  .route-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .route-field {
+    position: relative;
+  }
+
+  /* ====== FIELDS ====== */
+  .rfield {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e5e9;
+    background: #fafbfc;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--navy-950);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+  .rfield::placeholder { color: #adb5bd; font-weight: 400; }
+  .rfield:focus {
+    border-color: var(--gold);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(201,162,75,0.08);
+  }
+  .rfield-icon { padding-left: 42px; }
+  .input-icon-wrap { position: relative; }
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--gold);
+    pointer-events: none;
+  }
+
+  /* ====== CUSTOM SELECT ====== */
+  .custom-select { position: relative; }
+  .cs-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e5e9;
+    background: #fafbfc;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--navy-950);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+  .cs-trigger:hover,
+  .custom-select.open .cs-trigger {
+    border-color: var(--gold);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(201,162,75,0.08);
+  }
+  .cs-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .custom-select:not(.has-value) .cs-text {
+    color: #adb5bd;
+    font-weight: 400;
+  }
+  .cs-arrow {
+    width: 15px;
+    height: 15px;
+    color: #adb5bd;
+    transition: transform 0.3s, color 0.3s;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .custom-select.open .cs-arrow {
+    transform: rotate(180deg);
+    color: var(--gold);
+  }
+  .cs-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1.5px solid #e2e5e9;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    box-shadow: 0 16px 40px -10px rgba(3,20,42,0.18);
+  }
+  .custom-select.open .cs-dropdown {
+    display: block;
+  }
+  .cs-option {
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--navy-950);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .cs-option:last-child { margin-bottom: 0; }
+  .cs-option:hover {
+    background: rgba(201,162,75,0.08);
+  }
+  .cs-option.selected {
+    background: var(--gold);
+    color: white;
+    font-weight: 600;
+  }
+  .cs-option.hidden { display: none; }
+
+  /* ====== DETAIL ROW ====== */
+  .detail-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 480px) {
+    .detail-row { grid-template-columns: 1fr; }
+  }
+
+  /* ====== COUNTER ====== */
+  .pax-counter {
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1.5px solid #e2e5e9;
+    background: #fafbfc;
+    overflow: hidden;
+    height: 50px;
+  }
+  .pax-btn {
+    width: 50px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--navy-950);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+  .pax-btn:hover {
+    background: rgba(201,162,75,0.1);
+    color: var(--gold);
+  }
+  .pax-btn:active { transform: scale(0.92); }
+  .pax-value {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--navy-950);
+  }
+
+  /* ====== SEPARATOR ====== */
+  .rsep {
+    height: 1px;
+    background: #e2e5e9;
+    margin: 0 0 28px;
+  }
+
+  /* ====== INFO ROW ====== */
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 480px) {
+    .info-row { grid-template-columns: 1fr; }
+  }
+  .notes-field {
+    margin-bottom: 28px;
+  }
+
+  /* ====== SUBMIT ====== */
+  .rsubmit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 14px;
+    border: none;
+    background: var(--navy-950);
+    color: white;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .rsubmit:hover {
+    background: var(--gold);
+    color: var(--navy-950);
+    box-shadow: 0 8px 24px -6px rgba(201,162,75,0.4);
+    transform: translateY(-1px);
+  }
+
+  /* ====== TRUST ====== */
+  .rtrust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 0.78rem;
+    color: #8c929a;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr" is:inline></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js" is:inline></script>
+
+<script>
+  function initTransport() {
+    const form = document.getElementById("transport-form") as HTMLFormElement;
+    if (!form || form.dataset.init === "1") return;
+    if (!(window as any).flatpickr) {
+      setTimeout(initTransport, 120);
+      return;
+    }
+    form.dataset.init = "1";
+
+    const dateEl = document.getElementById("date-transfert") as HTMLInputElement;
+    (window as any).flatpickr(dateEl, {
+      locale: "fr",
+      dateFormat: "d/m/Y",
+      minDate: "today",
+      disableMobile: true,
+    });
+
+    // Custom selects
+    const fromHidden = document.getElementById("from") as HTMLInputElement;
+    const toHidden = document.getElementById("to") as HTMLInputElement;
+    const csFrom = document.getElementById("cs-from")!;
+    const csTo = document.getElementById("cs-to")!;
+
+    function initCustomSelect(wrapper: HTMLElement, hidden: HTMLInputElement) {
+      const trigger = wrapper.querySelector(".cs-trigger")!;
+      const textEl = wrapper.querySelector(".cs-text")!;
+      const options = wrapper.querySelectorAll<HTMLElement>(".cs-option");
+
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.querySelectorAll(".custom-select.open").forEach(el => { if (el !== wrapper) el.classList.remove("open"); });
+        wrapper.classList.toggle("open");
+      });
+
+      options.forEach(opt => {
+        opt.addEventListener("click", () => {
+          const val = opt.getAttribute("data-value")!;
+          hidden.value = val;
+          textEl.textContent = val;
+          wrapper.classList.add("has-value");
+          options.forEach(o => o.classList.remove("selected"));
+          opt.classList.add("selected");
+          wrapper.classList.remove("open");
+          filterOther(wrapper === csFrom ? "from" : "to");
+        });
+      });
+    }
+
+    function filterOther(changed: "from" | "to") {
+      const otherWrapper = changed === "from" ? csTo : csFrom;
+      const selectedVal = changed === "from" ? fromHidden.value : toHidden.value;
+      otherWrapper.querySelectorAll<HTMLElement>(".cs-option").forEach(opt => {
+        opt.classList.toggle("hidden", opt.getAttribute("data-value") === selectedVal);
+      });
+    }
+
+    function setCustomSelect(wrapper: HTMLElement, hidden: HTMLInputElement, val: string) {
+      const textEl = wrapper.querySelector(".cs-text")!;
+      hidden.value = val;
+      textEl.textContent = val || wrapper.getAttribute("data-placeholder")!;
+      wrapper.classList.toggle("has-value", !!val);
+      wrapper.querySelectorAll<HTMLElement>(".cs-option").forEach(o => {
+        o.classList.toggle("selected", o.getAttribute("data-value") === val);
+      });
+    }
+
+    initCustomSelect(csFrom, fromHidden);
+    initCustomSelect(csTo, toHidden);
+
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".custom-select.open").forEach(el => el.classList.remove("open"));
+    });
+
+    // Swap
+    document.getElementById("swap-btn")!.addEventListener("click", () => {
+      const tmp = fromHidden.value;
+      const tmp2 = toHidden.value;
+      setCustomSelect(csFrom, fromHidden, tmp2);
+      setCustomSelect(csTo, toHidden, tmp);
+      csFrom.querySelectorAll<HTMLElement>(".cs-option").forEach(o => o.classList.remove("hidden"));
+      csTo.querySelectorAll<HTMLElement>(".cs-option").forEach(o => o.classList.remove("hidden"));
+      if (fromHidden.value) filterOther("from");
+      if (toHidden.value) filterOther("to");
+    });
+
+    // Counter
+    let paxVal = 1;
+    const paxCount = document.getElementById("pax-count")!;
+    const paxHidden = document.getElementById("passagers") as HTMLInputElement;
+    document.getElementById("pax-minus")!.addEventListener("click", () => {
+      if (paxVal > 1) { paxVal--; paxCount.textContent = String(paxVal); paxHidden.value = String(paxVal); }
+    });
+    document.getElementById("pax-plus")!.addEventListener("click", () => {
+      if (paxVal < 20) { paxVal++; paxCount.textContent = String(paxVal); paxHidden.value = String(paxVal); }
+    });
+
+    // Submit
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const prenom = (document.getElementById("prenom") as HTMLInputElement).value.trim();
+      const nom = (document.getElementById("nom") as HTMLInputElement).value.trim();
+      const precisions = (document.getElementById("precisions") as HTMLTextAreaElement).value.trim();
+      const from = fromHidden.value;
+      const to = toHidden.value;
+      const date = dateEl.value;
+      const pax = paxHidden.value;
+
+      if (!prenom || !nom || !from || !to || !date) {
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
+      }
+      if (from === to) {
+        alert("Le départ et l'arrivée doivent être différents.");
+        return;
+      }
+
+      const message = encodeURIComponent(
+        `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\n` +
+        `Je souhaite réserver un transport :\n\n` +
+        `*Trajet :* ${from} → ${to}\n` +
+        `*Date :* ${date}\n` +
+        `*Passagers :* ${pax}\n` +
+        (precisions ? `*Précisions :* ${precisions}\n` : "") +
+        `\nMes informations :\n` +
+        `*Nom :* ${nom}\n` +
+        `*Prénom :* ${prenom}\n\n` +
+        `Barakallahou fikoum !`
+      );
+
+      window.open(`https://wa.me/32497570058?text=${message}`, "_blank");
+    });
+  }
+
+  document.addEventListener("astro:page-load", initTransport);
+</script>

@@ -1,0 +1,293 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+---
+
+<Layout title="Admin — Avis clients" description="Gérez les avis de vos clients.">
+  <Header />
+  <main>
+    <section class="relative pt-32 pb-16">
+      <div class="absolute inset-0 bg-gray-50"></div>
+      <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+        <h1 class="text-4xl sm:text-5xl font-heading font-bold mb-4" style="color: var(--navy-950);">Modération des avis</h1>
+        <p class="text-gray-500 text-lg max-w-xl mx-auto">Validez les avis en attente et gérez les retours de vos clients.</p>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+
+        <!-- Onglets -->
+        <div class="flex gap-4 mb-8 border-b border-gray-200">
+          <button id="tab-pending" class="tab-btn active px-4 py-3 font-semibold text-sm border-b-2" data-tab="pending" style="border-color: var(--gold);">
+            <span id="pending-count" class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white mr-2" style="background: var(--gold);">0</span>
+            En attente
+          </button>
+          <button id="tab-approved" class="tab-btn px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-gray-500" data-tab="approved">
+            <span id="approved-count" class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white mr-2" style="background: #10b981;">0</span>
+            Approuvés
+          </button>
+        </div>
+
+        <!-- Avis en attente -->
+        <div id="pending-tab" class="tab-content">
+          <div id="pending-list" class="space-y-4"></div>
+          <p id="pending-empty" class="text-center text-gray-400 py-8">Aucun avis en attente.</p>
+        </div>
+
+        <!-- Avis approuvés -->
+        <div id="approved-tab" class="tab-content hidden">
+          <div id="approved-list" class="space-y-4"></div>
+          <p id="approved-empty" class="text-center text-gray-400 py-8">Aucun avis approuvé.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .tab-btn {
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .tab-btn.active {
+    color: var(--navy-950);
+  }
+
+  .tab-content.hidden {
+    display: none;
+  }
+
+  .avis-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .avis-header {
+    flex: 1;
+  }
+
+  .avis-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .avis-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .btn-small {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-approve {
+    background: #10b981;
+    color: white;
+  }
+  .btn-approve:hover {
+    background: #059669;
+  }
+
+  .btn-reject {
+    background: #ef4444;
+    color: white;
+  }
+  .btn-reject:hover {
+    background: #dc2626;
+  }
+
+  .btn-delete {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+  .btn-delete:hover {
+    background: #e5e7eb;
+  }
+
+  .stars-display {
+    display: flex;
+    gap: 2px;
+  }
+
+  .star {
+    width: 14px;
+    height: 14px;
+  }
+</style>
+
+<script>
+  function initAdminAvis() {
+    const GOLD = "#C9A24B";
+    const EMPTY = "#D1D5DB";
+    const KEY_PENDING = "hs_avis_pending";
+    const KEY_APPROVED = "hs_avis_approved";
+
+    function starsSVG(note: number) {
+      return [1, 2, 3, 4, 5]
+        .map(
+          (i) =>
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="${i <= note ? GOLD : "none"}" stroke="${i <= note ? GOLD : EMPTY}" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>`
+        )
+        .join("");
+    }
+
+    function formatDate(isoDate: string) {
+      return new Date(isoDate).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    function renderAvisCard(avis: any, isPending: boolean) {
+      const init = avis.nom.slice(0, 2).toUpperCase();
+      const date = formatDate(avis.date);
+      const html = `
+        <div class="avis-card">
+          <div class="avis-avatar" style="background: #062B52;">${init}</div>
+          <div class="avis-header">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <p style="font-weight: 700; color: #0b2647; margin: 0; font-size: 14px;">${avis.nom}</p>
+              <p style="font-size: 11px; color: #9ca3af; margin: 0;">${date}</p>
+            </div>
+            <div class="stars-display">${starsSVG(avis.note)}</div>
+            <p style="color: #374151; font-size: 13px; line-height: 1.6; margin: 12px 0 0 0; font-style: italic;">"${avis.message}"</p>
+          </div>
+          <div class="avis-actions">
+            ${isPending ? `
+              <button class="btn-small btn-approve" data-id="${avis.id}" data-action="approve">Approuver</button>
+              <button class="btn-small btn-reject" data-id="${avis.id}" data-action="reject">Rejeter</button>
+            ` : `
+              <button class="btn-small btn-delete" data-id="${avis.id}" data-action="delete">Supprimer</button>
+            `}
+          </div>
+        </div>
+      `;
+      return html;
+    }
+
+    function refresh() {
+      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
+      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
+
+      const pendingList = document.getElementById("pending-list")!;
+      const pendingEmpty = document.getElementById("pending-empty")!;
+      const approvedList = document.getElementById("approved-list")!;
+      const approvedEmpty = document.getElementById("approved-empty")!;
+
+      document.getElementById("pending-count")!.textContent = String(pending.length);
+      document.getElementById("approved-count")!.textContent = String(approved.length);
+
+      if (pending.length === 0) {
+        pendingList.innerHTML = "";
+        pendingEmpty.classList.remove("hidden");
+      } else {
+        pendingEmpty.classList.add("hidden");
+        pendingList.innerHTML = pending.map((a) => renderAvisCard(a, true)).join("");
+      }
+
+      if (approved.length === 0) {
+        approvedList.innerHTML = "";
+        approvedEmpty.classList.remove("hidden");
+      } else {
+        approvedEmpty.classList.add("hidden");
+        approvedList.innerHTML = approved.map((a) => renderAvisCard(a, false)).join("");
+      }
+
+      attachEventListeners();
+    }
+
+    function attachEventListeners() {
+      // Boutons d'action
+      document.querySelectorAll("[data-action]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const id = (btn as HTMLButtonElement).dataset.id;
+          const action = (btn as HTMLButtonElement).dataset.action;
+
+          if (action === "approve") {
+            approveAvis(parseInt(id!));
+          } else if (action === "reject") {
+            rejectAvis(parseInt(id!));
+          } else if (action === "delete") {
+            deleteAvis(parseInt(id!));
+          }
+        });
+      });
+    }
+
+    function approveAvis(id: number) {
+      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
+      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
+
+      const avis = pending.find((a) => a.id === id);
+      if (!avis) return;
+
+      pending.splice(pending.indexOf(avis), 1);
+      approved.push(avis);
+
+      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
+      localStorage.setItem(KEY_APPROVED, JSON.stringify(approved));
+      refresh();
+    }
+
+    function rejectAvis(id: number) {
+      const pending: any[] = JSON.parse(localStorage.getItem(KEY_PENDING) || "[]");
+      const idx = pending.findIndex((a) => a.id === id);
+      if (idx === -1) return;
+
+      pending.splice(idx, 1);
+      localStorage.setItem(KEY_PENDING, JSON.stringify(pending));
+      refresh();
+    }
+
+    function deleteAvis(id: number) {
+      const approved: any[] = JSON.parse(localStorage.getItem(KEY_APPROVED) || "[]");
+      const idx = approved.findIndex((a) => a.id === id);
+      if (idx === -1) return;
+
+      approved.splice(idx, 1);
+      localStorage.setItem(KEY_APPROVED, JSON.stringify(approved));
+      refresh();
+    }
+
+    // Onglets
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tabName = (btn as HTMLButtonElement).dataset.tab;
+
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".tab-content").forEach((t) => t.classList.add("hidden"));
+        document.getElementById(`${tabName}-tab`)?.classList.remove("hidden");
+      });
+    });
+
+    refresh();
+  }
+
+  document.addEventListener("astro:page-load", initAdminAvis);
+</script>
