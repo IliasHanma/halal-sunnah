@@ -283,17 +283,18 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
     function update() {
       const trigger = window.innerHeight * 0.78;
 
+      let lastActiveIndex = -1;
+
       steps.forEach((step, i) => {
         const rect = step.getBoundingClientRect();
         if (rect.top < trigger) {
           step.classList.add('visible');
           dots[i]?.classList.add('active');
+          lastActiveIndex = i;
+        } else {
+          step.classList.remove('visible');
+          dots[i]?.classList.remove('active');
         }
-      });
-
-      let lastActiveIndex = -1;
-      dots.forEach((dot, i) => {
-        if (dot.classList.contains('active')) lastActiveIndex = i;
       });
 
       if (lastActiveIndex < 0) {
@@ -301,15 +302,12 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
         return;
       }
 
-      const trackRect = track.getBoundingClientRect();
-      const firstDotCenter = (dots[0] as HTMLElement).getBoundingClientRect().top + 15;
-      const lastDotCenter = (dots[lastActiveIndex] as HTMLElement).getBoundingClientRect().top + 15;
+      const timelineTop = timeline.getBoundingClientRect().top;
+      const firstDotCenter = (dots[0] as HTMLElement).getBoundingClientRect().top + 15 - timelineTop;
+      const lastDotCenter = (dots[lastActiveIndex] as HTMLElement).getBoundingClientRect().top + 15 - timelineTop;
 
-      const startOffset = firstDotCenter - trackRect.top;
-      const fillHeight = lastDotCenter - firstDotCenter;
-
-      progress.style.top = (trackRect.top - timeline.getBoundingClientRect().top + startOffset) + 'px';
-      progress.style.height = Math.max(0, fillHeight) + 'px';
+      progress.style.top = firstDotCenter + 'px';
+      progress.style.height = Math.max(0, lastDotCenter - firstDotCenter) + 'px';
     }
 
     window.addEventListener('scroll', update, { passive: true });
