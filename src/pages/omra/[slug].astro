@@ -111,22 +111,22 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
             </div>
 
             <!-- Itinéraire -->
-            <div class="mb-14">
+            <div class="mb-14" id="itineraire">
               <h2 class="font-heading font-bold text-xl mb-8" style="color:var(--ink);">Votre itinéraire</h2>
-              <div class="od-timeline relative" style="padding-left:36px;">
+              <div class="od-timeline relative" style="padding-left:44px;">
                 <!-- Ligne de fond grise -->
-                <div class="tl-track absolute" style="left:11px; top:0; bottom:0; width:2px; background:#e5e7eb; border-radius:1px;"></div>
-                <!-- Ligne dorée qui se remplit -->
-                <div class="tl-progress absolute" style="left:11px; top:0; width:2px; height:0; border-radius:1px; transition: none;"></div>
+                <div class="tl-track absolute" style="left:14px; top:15px; bottom:15px; width:2px; background:#e5e7eb;"></div>
+                <!-- Ligne dorée qui progresse au scroll -->
+                <div class="tl-progress absolute" id="tl-gold" style="left:14px; top:15px; width:2px; height:0;"></div>
 
                 {dep.itinerary.map((step: any, i: number) => (
-                  <div class="od-step relative pb-10 last:pb-0" data-step={i}>
-                    <div class="tl-dot absolute flex items-center justify-center text-[10px] font-bold text-white z-10" style="left:-36px; top:0; width:24px; height:24px; border-radius:50%; background:var(--navy-950); transition: background 0.4s, box-shadow 0.4s;">
+                  <div class="od-step relative pb-12 last:pb-0" data-step={i}>
+                    <div class="tl-dot absolute flex items-center justify-center z-10" style={`left:-44px; top:0; width:30px; height:30px; border-radius:50%; background:var(--navy-950); color:#fff; font-size:12px; font-weight:700; border:3px solid #e5e7eb; transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;`}>
                       {i + 1}
                     </div>
                     <div>
-                      <p class="text-[11px] uppercase tracking-wider font-semibold mb-1" style="color:var(--gold-deep);">{step.day}</p>
-                      <h3 class="font-heading font-bold text-base mb-1.5" style="color:var(--ink);">{step.title}</h3>
+                      <p class="text-[11px] uppercase tracking-wider font-bold mb-1.5" style="color:var(--gold-deep);">{step.day}</p>
+                      <h3 class="font-heading font-bold text-lg mb-1" style="color:var(--ink);">{step.title}</h3>
                       <p class="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
@@ -238,18 +238,19 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
   }
 
   .tl-progress {
-    background: linear-gradient(to bottom, var(--gold), var(--gold-deep));
-    box-shadow: 0 0 8px rgba(200, 154, 61, 0.3);
+    background: var(--gold);
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .tl-dot.active {
     background: var(--gold) !important;
-    box-shadow: 0 0 0 4px rgba(200, 154, 61, 0.15), 0 0 12px rgba(200, 154, 61, 0.25);
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 5px rgba(200, 154, 61, 0.12);
   }
 
   .od-step {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(14px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .od-step.visible {
@@ -274,30 +275,22 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
     const timeline = document.querySelector('.od-timeline') as HTMLElement;
     if (!timeline) return;
 
-    const progress = timeline.querySelector('.tl-progress') as HTMLElement;
+    const progress = document.getElementById('tl-gold') as HTMLElement;
+    const track = timeline.querySelector('.tl-track') as HTMLElement;
     const steps = timeline.querySelectorAll('.od-step');
     const dots = timeline.querySelectorAll('.tl-dot');
 
     function update() {
-      const timelineRect = timeline.getBoundingClientRect();
-      const viewportCenter = window.innerHeight * 0.75;
+      const trigger = window.innerHeight * 0.78;
 
       steps.forEach((step, i) => {
-        const stepRect = step.getBoundingClientRect();
-        if (stepRect.top < viewportCenter) {
+        const rect = step.getBoundingClientRect();
+        if (rect.top < trigger) {
           step.classList.add('visible');
           dots[i]?.classList.add('active');
         }
       });
 
-      const firstDot = dots[0] as HTMLElement;
-      const lastActiveDot = timeline.querySelector('.tl-dot.active:last-of-type') as HTMLElement;
-      if (!firstDot || !lastActiveDot) {
-        progress.style.height = '0px';
-        return;
-      }
-
-      // Find the last active step index
       let lastActiveIndex = -1;
       dots.forEach((dot, i) => {
         if (dot.classList.contains('active')) lastActiveIndex = i;
@@ -308,19 +301,20 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
         return;
       }
 
-      const trackTop = timeline.querySelector('.tl-track')!.getBoundingClientRect().top;
-      const startY = firstDot.getBoundingClientRect().top + 12 - trackTop;
-      const endDot = dots[lastActiveIndex] as HTMLElement;
-      const endY = endDot.getBoundingClientRect().top + 12 - trackTop;
+      const trackRect = track.getBoundingClientRect();
+      const firstDotCenter = (dots[0] as HTMLElement).getBoundingClientRect().top + 15;
+      const lastDotCenter = (dots[lastActiveIndex] as HTMLElement).getBoundingClientRect().top + 15;
 
-      progress.style.top = startY + 'px';
-      progress.style.height = Math.max(0, endY - startY) + 'px';
-      progress.style.transition = 'height 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      const startOffset = firstDotCenter - trackRect.top;
+      const fillHeight = lastDotCenter - firstDotCenter;
+
+      progress.style.top = (trackRect.top - timeline.getBoundingClientRect().top + startOffset) + 'px';
+      progress.style.height = Math.max(0, fillHeight) + 'px';
     }
 
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
-    setTimeout(update, 100);
+    setTimeout(update, 200);
   }
 
   document.addEventListener('astro:page-load', initTimeline);
