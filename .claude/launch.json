@@ -3,9 +3,8 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
-      "runtimeArgs": ["astro", "dev", "--port", "4400"],
-      "cwd": "C:\\Users\\A\\Desktop\\Halal Sunnah",
+      "runtimeExecutable": "C:\\Users\\A\\Desktop\\Halal Sunnah\\node_modules\\.bin\\astro.cmd",
+      "runtimeArgs": ["dev", "--port", "4400"],
       "port": 4400
     }
   ]

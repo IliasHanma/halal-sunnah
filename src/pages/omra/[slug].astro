@@ -113,15 +113,17 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
             <!-- Itinéraire -->
             <div class="mb-14">
               <h2 class="font-heading font-bold text-xl mb-8" style="color:var(--ink);">Votre itinéraire</h2>
-              <div class="od-timeline relative pl-8">
+              <div class="od-timeline relative" style="padding-left:36px;">
+                <!-- Ligne de fond grise -->
+                <div class="tl-track absolute" style="left:11px; top:0; bottom:0; width:2px; background:#e5e7eb; border-radius:1px;"></div>
+                <!-- Ligne dorée qui se remplit -->
+                <div class="tl-progress absolute" style="left:11px; top:0; width:2px; height:0; border-radius:1px; transition: none;"></div>
+
                 {dep.itinerary.map((step: any, i: number) => (
-                  <div class="od-step relative pb-10 last:pb-0">
-                    <div class="absolute left-[-32px] top-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white z-10" style={`background: ${i === 0 ? 'var(--gold)' : 'var(--navy-950)'};`}>
+                  <div class="od-step relative pb-10 last:pb-0" data-step={i}>
+                    <div class="tl-dot absolute flex items-center justify-center text-[10px] font-bold text-white z-10" style="left:-36px; top:0; width:24px; height:24px; border-radius:50%; background:var(--navy-950); transition: background 0.4s, box-shadow 0.4s;">
                       {i + 1}
                     </div>
-                    {i < dep.itinerary.length - 1 && (
-                      <div class="absolute left-[-21px] top-6 bottom-0 w-px" style="background: linear-gradient(to bottom, var(--navy-950), #e5e7eb);"></div>
-                    )}
                     <div>
                       <p class="text-[11px] uppercase tracking-wider font-semibold mb-1" style="color:var(--gold-deep);">{step.day}</p>
                       <h3 class="font-heading font-bold text-base mb-1.5" style="color:var(--ink);">{step.title}</h3>
@@ -235,19 +237,24 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
     box-shadow: 0 8px 25px -5px rgba(200, 154, 61, 0.4);
   }
 
+  .tl-progress {
+    background: linear-gradient(to bottom, var(--gold), var(--gold-deep));
+    box-shadow: 0 0 8px rgba(200, 154, 61, 0.3);
+  }
+
+  .tl-dot.active {
+    background: var(--gold) !important;
+    box-shadow: 0 0 0 4px rgba(200, 154, 61, 0.15), 0 0 12px rgba(200, 154, 61, 0.25);
+  }
+
   .od-step {
     opacity: 0;
-    transform: translateY(12px);
-    animation: stepIn 0.5s ease forwards;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .od-step:nth-child(1) { animation-delay: 0.1s; }
-  .od-step:nth-child(2) { animation-delay: 0.2s; }
-  .od-step:nth-child(3) { animation-delay: 0.3s; }
-  .od-step:nth-child(4) { animation-delay: 0.4s; }
-  .od-step:nth-child(5) { animation-delay: 0.5s; }
-
-  @keyframes stepIn {
-    to { opacity: 1; transform: translateY(0); }
+  .od-step.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .od-sticky-bar {
@@ -261,3 +268,61 @@ const waText = `As salamo 3alaykoum wa rahmatullahi wa barakaatouh,\n\nJe suis i
     main { padding-bottom: 80px; }
   }
 </style>
+
+<script>
+  function initTimeline() {
+    const timeline = document.querySelector('.od-timeline') as HTMLElement;
+    if (!timeline) return;
+
+    const progress = timeline.querySelector('.tl-progress') as HTMLElement;
+    const steps = timeline.querySelectorAll('.od-step');
+    const dots = timeline.querySelectorAll('.tl-dot');
+
+    function update() {
+      const timelineRect = timeline.getBoundingClientRect();
+      const viewportCenter = window.innerHeight * 0.75;
+
+      steps.forEach((step, i) => {
+        const stepRect = step.getBoundingClientRect();
+        if (stepRect.top < viewportCenter) {
+          step.classList.add('visible');
+          dots[i]?.classList.add('active');
+        }
+      });
+
+      const firstDot = dots[0] as HTMLElement;
+      const lastActiveDot = timeline.querySelector('.tl-dot.active:last-of-type') as HTMLElement;
+      if (!firstDot || !lastActiveDot) {
+        progress.style.height = '0px';
+        return;
+      }
+
+      // Find the last active step index
+      let lastActiveIndex = -1;
+      dots.forEach((dot, i) => {
+        if (dot.classList.contains('active')) lastActiveIndex = i;
+      });
+
+      if (lastActiveIndex < 0) {
+        progress.style.height = '0px';
+        return;
+      }
+
+      const trackTop = timeline.querySelector('.tl-track')!.getBoundingClientRect().top;
+      const startY = firstDot.getBoundingClientRect().top + 12 - trackTop;
+      const endDot = dots[lastActiveIndex] as HTMLElement;
+      const endY = endDot.getBoundingClientRect().top + 12 - trackTop;
+
+      progress.style.top = startY + 'px';
+      progress.style.height = Math.max(0, endY - startY) + 'px';
+      progress.style.transition = 'height 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    setTimeout(update, 100);
+  }
+
+  document.addEventListener('astro:page-load', initTimeline);
+  initTimeline();
+</script>
